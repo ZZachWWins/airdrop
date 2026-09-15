@@ -1,0 +1,47 @@
+.connect-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--brand-accent);
+    color: var(--brand-navy);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: filter 0.2s;
+    white-space: nowrap;
+}
+
+.connect-btn:hover {
+    filter: brightness(1.1);
+}
+
+.connect-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.connect-btn.connected {
+    background: transparent;
+    color: var(--brand-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: var(--font-mono);
+}
+
+.connect-btn.connected:hover {
+    border-color: var(--brand-accent);
+    filter: none;
+}
+
+.connect-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--status-success);
+    box-shadow: 0 0 6px rgba(0, 230, 118, 0.5);
+    flex-shrink: 0;
+}

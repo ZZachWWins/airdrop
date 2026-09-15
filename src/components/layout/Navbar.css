@@ -1,0 +1,132 @@
+.navbar {
+    height: var(--header-height);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(1, 4, 20, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100vw;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    flex-shrink: 0;
+}
+
+.logo-mark {
+    color: var(--brand-light);
+    display: block;
+}
+
+.logo-badge {
+    background: var(--brand-accent);
+    color: var(--brand-navy);
+    font-size: 0.55rem;
+    padding: 2px 5px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--brand-muted);
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--brand-light);
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    color: var(--brand-light);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.mobile-only-actions {
+    display: none;
+    margin-top: 2rem;
+    width: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .desktop-actions {
+        display: none;
+    }
+
+    .navbar-links {
+        position: fixed;
+        inset: var(--header-height) 0 auto 0;
+        height: calc(100vh - var(--header-height));
+        /* Fully opaque, no backdrop-filter: this drawer is a fixed child of
+           .navbar, which already has one — nesting them leaves the page
+           bleeding through behind the links. */
+        background-color: var(--brand-navy);
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 3rem 1.5rem;
+        gap: 2rem;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1000;
+    }
+
+    .navbar-links.mobile-open {
+        transform: translateX(0);
+    }
+
+    .navbar-links .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .mobile-only-actions {
+        display: flex;
+    }
+}

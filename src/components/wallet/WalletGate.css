@@ -1,0 +1,92 @@
+.wallet-gate {
+    text-align: left;
+}
+
+.wallet-gate-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 0.6rem;
+}
+
+.wallet-gate-copy {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    margin: 0 0 1.25rem;
+}
+
+.wallet-gate-steps {
+    margin: 1.5rem 0 1.25rem;
+    padding-left: 1.1rem;
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: var(--text-body);
+}
+
+.wallet-gate-steps li::marker {
+    color: var(--brand-accent);
+    font-weight: 700;
+}
+
+.wallet-gate-url {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(1, 4, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+}
+
+.wallet-gate-url code {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--brand-accent);
+    overflow-wrap: anywhere;
+}
+
+.wallet-gate-copy-btn {
+    color: var(--text-body);
+    flex-shrink: 0;
+    display: flex;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+
+.wallet-gate-copy-btn:hover {
+    color: var(--brand-light);
+}
+
+.wallet-gate-copied {
+    font-size: 0.72rem;
+    color: var(--status-success);
+    margin: 0.5rem 0 0;
+}
+
+.wallet-gate-stores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.store-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-body);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.85rem;
+    transition: all 0.2s;
+}
+
+.store-link:hover {
+    color: var(--brand-light);
+    border-color: var(--brand-accent);
+}

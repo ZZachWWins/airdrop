@@ -1,0 +1,198 @@
+/* Xeris design system tokens — kept in sync with XerisLaunchpad/DESIGN_SYSTEM.md.
+   Fonts are self-hosted via @fontsource (imported in main.jsx) so nothing loads
+   from an external font CDN and the strict production CSP holds. */
+
+:root {
+  /* Colors */
+  --brand-blue: #0019A5;
+  --brand-vibrant: #8FA3FF;
+  --brand-navy: #010414;
+  --brand-midnight: #050B2B;
+  --brand-space: #0A123D;
+  --brand-muted: #4E5BA6;
+  --brand-deep: #000B4F;
+  --brand-light: #F0F2F5;
+  --brand-accent: #8FA3FF;
+
+  --text-header: #F0F2F5;
+  --text-body: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Status */
+  --status-success: #00E676;
+  --status-error: #FF5252;
+  --status-warn: #FFB74D;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  /* Spacing & Layout */
+  --radius-sm: 2px;
+  --header-height: 64px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app-layout {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  background-color: var(--brand-navy);
+}
+
+body {
+  background-color: var(--brand-navy);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Luxury grain overlay — premium texture over the flat navy. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("/noise.svg");
+  opacity: 0.04;
+  filter: contrast(150%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  color: var(--text-header);
+  letter-spacing: -0.025em;
+  margin-top: 0;
+}
+
+p {
+  margin-top: 0;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-area {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding-top: var(--header-height);
+}
+
+/* `.container` and `.page` are routinely composed on one element
+   (`<div className="page container">`), so both use longhand properties —
+   a `padding` or `margin` shorthand in either would reset the other's axis. */
+.container {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.page {
+  padding-top: 4rem;
+  padding-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .page {
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+  }
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+
+.text-highlight {
+  color: var(--brand-vibrant);
+}
+
+.glass-panel {
+  background: rgba(10, 18, 61, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-glow {
+  box-shadow: 0 0 40px rgba(0, 25, 165, 0.2);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Section eyebrow — the small uppercase label above a heading. */
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--brand-muted);
+  margin: 0 0 0.75rem;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.section-sub {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 62ch;
+}
+
+/* Resets */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

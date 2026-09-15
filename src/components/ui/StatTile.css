@@ -1,0 +1,51 @@
+.stat-tile {
+    background-color: rgba(10, 18, 61, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    padding: 1.15rem 1.25rem;
+    transition: border-color 0.3s ease;
+}
+
+.stat-tile:hover {
+    border-color: rgba(143, 163, 255, 0.25);
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+    margin: 0 0 0.6rem;
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--brand-light);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.stat-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 0.5rem 0 0;
+}
+
+@keyframes stat-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
+}
+
+.stat-skeleton {
+    display: inline-block;
+    width: 3.5ch;
+    height: 1.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--brand-muted);
+    animation: stat-pulse 1.4s ease-in-out infinite;
+    vertical-align: middle;
+}

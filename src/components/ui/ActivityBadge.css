@@ -1,0 +1,30 @@
+.activity-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    padding: 3px 7px;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.activity-badge.tier-new {
+    color: var(--brand-muted);
+    border-color: rgba(78, 91, 166, 0.5);
+    background: rgba(78, 91, 166, 0.1);
+}
+
+.activity-badge.tier-funded {
+    color: var(--brand-accent);
+    border-color: rgba(143, 163, 255, 0.45);
+    background: rgba(143, 163, 255, 0.1);
+}
+
+.activity-badge.tier-active {
+    color: var(--status-success);
+    border-color: rgba(0, 230, 118, 0.45);
+    background: rgba(0, 230, 118, 0.08);
+}
