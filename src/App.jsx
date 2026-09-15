@@ -5,6 +5,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
 import { Leaderboard } from './pages/Leaderboard'
+import { Claim } from './pages/Claim'
 import { Faq } from './pages/Faq'
 import { ReferralLanding } from './pages/ReferralLanding'
 import { NotFound } from './pages/NotFound'
@@ -28,6 +29,10 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
+                    {/* Always routed. The endpoints refuse a claim until
+                        CLAIM_PHASE=open, so a stale link is harmless — it just
+                        cannot be reached from the nav before launch. */}
+                    <Route path="/claim" element={<Claim />} />
                     <Route path="/faq" element={<Faq />} />
                     <Route path="/r/:code" element={<ReferralLanding />} />
                     <Route path="*" element={<NotFound />} />

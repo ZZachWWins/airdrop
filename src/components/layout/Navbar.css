@@ -68,6 +68,16 @@
     color: var(--brand-light);
 }
 
+/* The claim link only appears once the window is open — worth pulling the eye. */
+.nav-link.highlight {
+    color: var(--brand-accent);
+}
+
+.nav-link.highlight:hover,
+.nav-link.highlight.active {
+    color: var(--brand-light);
+}
+
 .navbar-actions {
     display: flex;
     align-items: center;

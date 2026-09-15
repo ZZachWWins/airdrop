@@ -19,7 +19,19 @@ const FAQS = [
   },
   {
     q: `When do I get the ${TOKEN_SYMBOL}?`,
-    a: `Not now. This campaign builds the registry of verified testnet participants. When ${TOKEN_SYMBOL} launches on mainnet, that registry becomes the claim list and verified addresses will be able to claim there. Final allocation rules are set at mainnet launch — verifying does not guarantee a specific amount.`,
+    a: `Not now. This campaign builds the registry of verified testnet participants. When ${TOKEN_SYMBOL} launches on mainnet, a Claim tab appears here: you come back, connect the same testnet wallet, enter your mainnet address, and sign once to authorise the payout. Final allocation rules are set at mainnet launch — verifying does not guarantee a specific amount.`,
+  },
+  {
+    q: 'My mainnet wallet is a different keypair. How does that work?',
+    a: `It does not need to be the same. At claim time you paste your mainnet address and sign with your testnet key. That address is written into the message you sign, so the signature proves two things at once: that you hold the testnet wallet, and that you authorised that exact payout address. Nothing between your wallet and the registry can change where the tokens go without breaking the signature.`,
+  },
+  {
+    q: 'Keep your testnet key. Seriously.',
+    a: `Your testnet private key is the only thing that can claim your allocation. There is no email recovery, no support override, and no way for anyone to reissue it — that is what makes the registry trustworthy, and it cuts both ways. If you delete the wallet or lose the key before mainnet, the claim is gone. Back up your recovery phrase now, not at launch.`,
+  },
+  {
+    q: 'What if I typo my mainnet address?',
+    a: `The form rejects anything that is not a valid Xeris address, and refuses your testnet address outright. Beyond that, check it yourself — the address appears in full in the wallet prompt before you approve. If you catch a mistake afterwards you can re-sign with a corrected address any time before the distribution runs; once the payout transaction has gone out it cannot be reversed.`,
   },
   {
     q: 'How do invite codes work?',
