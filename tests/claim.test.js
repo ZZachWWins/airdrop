@@ -326,6 +326,78 @@ describe('claim', () => {
   })
 })
 
+describe('claim window closed', () => {
+  // The whole point of CLAIM_PHASE: no mainnet address is collected, stored or
+  // accepted until the window is deliberately opened at mainnet launch.
+  test('collects nothing while closed', async () => {
+    const wallet = createWallet()
+    const mainnet = createWallet()
+    await verifyWallet(wallet)
+    process.env.CLAIM_PHASE = 'closed'
+
+    const challengeRes = await claimChallenge(
+      post('/api/claim/challenge', { address: wallet.address, mainnetAddress: mainnet.address }),
+    )
+    assert.equal(challengeRes.status, 403)
+    assert.equal((await challengeRes.json()).reason, 'claim_closed')
+
+    const claimRes = await claim(
+      post('/api/claim', { address: wallet.address, nonce: 'anything', signature: 'anything' }),
+    )
+    assert.equal(claimRes.status, 403)
+    assert.equal((await claimRes.json()).reason, 'claim_closed')
+
+    // Nothing was written.
+    const status = await (await claim(get(`/api/claim?address=${wallet.address}`))).json()
+    assert.equal(status.phase, 'closed')
+    assert.equal(status.claim, null)
+    assert.equal(status.eligible, true)
+
+    const { listClaims } = await import('../netlify/lib/storage.js')
+    assert.equal((await listClaims()).length, 0)
+  })
+
+  test('an unset CLAIM_PHASE is closed, not open', async () => {
+    delete process.env.CLAIM_PHASE
+    const { claimPhase } = await import('../netlify/lib/campaign.js')
+    assert.equal(claimPhase(), 'closed')
+
+    for (const value of ['', 'true', '1', 'OPEN', 'yes', 'closed']) {
+      process.env.CLAIM_PHASE = value
+      assert.equal(claimPhase(), 'closed', `CLAIM_PHASE=${value} must not open the window`)
+    }
+
+    process.env.CLAIM_PHASE = 'open'
+    assert.equal(claimPhase(), 'open')
+  })
+
+  test('a challenge issued while open cannot be spent after closing', async () => {
+    const wallet = createWallet()
+    const mainnet = createWallet()
+    await verifyWallet(wallet)
+
+    const res = await claimChallenge(
+      post('/api/claim/challenge', { address: wallet.address, mainnetAddress: mainnet.address }),
+    )
+    const { nonce, message } = await res.json()
+
+    process.env.CLAIM_PHASE = 'closed'
+    const response = await claim(
+      post('/api/claim', { address: wallet.address, nonce, signature: wallet.sign(message) }),
+    )
+    assert.equal(response.status, 403)
+    assert.equal((await response.json()).reason, 'claim_closed')
+  })
+
+  test('stats reports the phase so the frontend can hide the tab', async () => {
+    const stats = (await import('../netlify/functions/stats.js')).default
+
+    process.env.CLAIM_PHASE = 'closed'
+    const closed = await (await stats(get('/api/stats'))).json()
+    assert.equal(closed.claimPhase, 'closed')
+  })
+})
+
 describe('payouts', () => {
   test('requires the admin token', async () => {
     assert.equal((await payouts(get('/api/payouts'))).status, 401)

@@ -102,6 +102,41 @@ function ClaimFlow({ address }) {
     )
   }
 
+  // ── Window not open ─────────────────────────────────────────────────────
+  // The endpoints refuse a claim until CLAIM_PHASE=open, so without this the
+  // page would invite someone to type a payout address and sign for it, then
+  // fail at the last step. Nothing is collected before the window opens.
+  if (status && status.phase !== 'open') {
+    return (
+      <div className="page container claim-narrow">
+        <p className="eyebrow">Mainnet claim</p>
+        <h1 className="section-title">Claiming is not open yet</h1>
+        <p className="section-sub">
+          {status.eligible
+            ? `Your testnet wallet is verified and on the list. When ${TOKEN_SYMBOL} launches on mainnet, come back here to enter your mainnet address and claim.`
+            : `This wallet is not in the testnet registry. Verify it first — claiming opens when ${TOKEN_SYMBOL} launches on mainnet.`}
+        </p>
+
+        <Card className="claim-result static">
+          <div className="claim-status">
+            <Lock size={18} />
+            <span>Opens at mainnet launch</span>
+          </div>
+          <p className="claim-closed-note">
+            Keep your {NETWORK_LABEL} wallet and its recovery phrase safe. That key is the only
+            thing that can claim this allocation — there is no recovery if it is lost.
+          </p>
+        </Card>
+
+        <Link to={status.eligible ? '/dashboard' : '/'}>
+          <Button variant="secondary" size="lg" className="claim-cta">
+            {status.eligible ? 'Back to dashboard' : 'Verify this wallet'}
+          </Button>
+        </Link>
+      </div>
+    )
+  }
+
   // ── Not eligible ────────────────────────────────────────────────────────
   if (status && !status.eligible) {
     return (

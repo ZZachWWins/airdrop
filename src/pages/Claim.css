@@ -193,6 +193,13 @@
     color: var(--brand-accent);
 }
 
+.claim-closed-note {
+    font-size: 0.83rem;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0;
+}
+
 .claim-rebind {
     font-size: 0.75rem;
     line-height: 1.65;
