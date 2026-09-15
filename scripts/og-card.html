@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Source for /public/og.png — the 1200x630 card that unfurls when the site
+      is linked on X, Discord, Telegram or Slack.
+
+      Regenerate after editing:  node scripts/render-assets.mjs
+      (see scripts/render-assets.mjs for the one dependency it needs)
+    -->
+    <style>
+      @font-face {
+        font-family: 'Plus Jakarta Sans';
+        src: url('../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2') format('woff2');
+        font-weight: 800;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2');
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../node_modules/@fontsource/inter/files/inter-latin-900-normal.woff2') format('woff2');
+        font-weight: 900;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        width: 1200px;
+        height: 630px;
+        background: #010414;
+        font-family: 'Inter', system-ui, sans-serif;
+        color: #94a3b8;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 84px;
+      }
+
+      /* Depth: one soft brand glow, offset so it does not wash out the text. */
+      .glow {
+        position: absolute;
+        width: 900px;
+        height: 900px;
+        right: -300px;
+        top: -380px;
+        background: radial-gradient(circle, rgba(0, 25, 165, 0.55) 0%, rgba(0, 25, 165, 0) 62%);
+        pointer-events: none;
+      }
+
+      /* Faint grid, the "engineered" texture the rest of the site carries. */
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(143, 163, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(143, 163, 255, 0.045) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: linear-gradient(105deg, #000 0%, transparent 72%);
+        -webkit-mask-image: linear-gradient(105deg, #000 0%, transparent 72%);
+        pointer-events: none;
+      }
+
+      .watermark {
+        position: absolute;
+        right: 6px;
+        bottom: -130px;
+        opacity: 0.09;
+        color: #8FA3FF;
+      }
+
+      .content { position: relative; z-index: 2; }
+
+      .brandline {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 44px;
+      }
+
+      .wordmark {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 26px;
+        letter-spacing: -0.03em;
+        color: #F0F2F5;
+      }
+
+      .badge {
+        background: #8FA3FF;
+        color: #010414;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        padding: 4px 9px;
+      }
+
+      h1 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 74px;
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        color: #F0F2F5;
+        margin-bottom: 30px;
+      }
+
+      h1 .accent { color: #8FA3FF; }
+
+      p.sub {
+        font-size: 25px;
+        line-height: 1.5;
+        max-width: 760px;
+        margin-bottom: 52px;
+      }
+
+      /* Three proof points — the reasons to trust it, not marketing adjectives. */
+      .facts {
+        display: flex;
+        gap: 18px;
+      }
+
+      .fact {
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-top: 2px solid #8FA3FF;
+        background: rgba(10, 18, 61, 0.55);
+        padding: 17px 24px;
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #F0F2F5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+    <div class="grid"></div>
+
+    <svg class="watermark" width="440" height="440" viewBox="0 0 768 768" fill="none">
+      <g stroke="currentColor" stroke-width="46" stroke-linecap="round">
+        <path d="M384 40v150" /><path d="M384 578v150" />
+        <path d="M40 384h150" /><path d="M578 384h150" />
+        <path d="M192 120l384 528" /><path d="M576 120L192 648" />
+      </g>
+    </svg>
+
+    <div class="content">
+      <div class="brandline">
+        <svg width="34" height="34" viewBox="0 0 768 768" fill="none">
+          <g stroke="#F0F2F5" stroke-width="52" stroke-linecap="round">
+            <path d="M384 40v150" /><path d="M384 578v150" />
+            <path d="M40 384h150" /><path d="M578 384h150" />
+            <path d="M192 120l384 528" /><path d="M576 120L192 648" />
+          </g>
+        </svg>
+        <span class="wordmark">Xeris</span>
+        <span class="badge">AIRDROP</span>
+      </div>
+
+      <h1>
+        Verify your testnet wallet.<br />
+        <span class="accent">Claim XRS at mainnet.</span>
+      </h1>
+
+      <p class="sub">
+        One signature from your Xeris Web4 wallet, anchored to a live testnet block.
+        No gas, no transaction.
+      </p>
+
+      <div class="facts">
+        <div class="fact">Signature verified</div>
+        <div class="fact">On-chain anchored</div>
+        <div class="fact">Referrals tracked</div>
+      </div>
+    </div>
+  </body>
+</html>
