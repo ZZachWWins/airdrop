@@ -1,0 +1,19 @@
+.not-found {
+    max-width: 560px;
+    text-align: center;
+    padding-top: 6rem;
+}
+
+.not-found-mark {
+    color: var(--brand-vibrant);
+    opacity: 0.2;
+    margin-bottom: 2rem;
+}
+
+.not-found .section-sub {
+    margin: 0 auto;
+}
+
+.not-found-cta {
+    margin-top: 2rem;
+}

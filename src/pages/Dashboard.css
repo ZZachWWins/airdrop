@@ -1,0 +1,213 @@
+/* ── Empty / gate states ───────────────────────────────────────────────── */
+
+.dashboard-empty {
+    max-width: 640px;
+}
+
+.dashboard-gate {
+    margin-top: 2rem;
+}
+
+.dashboard-cta {
+    margin-top: 1.75rem;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+.dashboard-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.dashboard-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+}
+
+.dashboard-check {
+    color: var(--status-success);
+    flex-shrink: 0;
+}
+
+.dashboard-address {
+    font-size: 0.8rem;
+    color: var(--brand-accent);
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.85rem;
+    transition: all 0.2s;
+}
+
+.dashboard-refresh:hover:not(:disabled) {
+    color: var(--brand-light);
+    border-color: var(--brand-accent);
+}
+
+.dashboard-refresh:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ── Record list ───────────────────────────────────────────────────────── */
+
+.record-list {
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.record-list > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.record-list > div:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.record-list dt {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+    flex-shrink: 0;
+}
+
+.record-list dd {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--brand-light);
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.record-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 1.25rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.record-note svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ── Referral list ─────────────────────────────────────────────────────── */
+
+.referral-empty {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    margin: 0.5rem 0 0;
+}
+
+.referral-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.referral-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.referral-list li:last-child {
+    border-bottom: none;
+}
+
+.referral-address {
+    font-size: 0.78rem;
+    color: var(--brand-light);
+}
+
+.referral-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.referral-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}

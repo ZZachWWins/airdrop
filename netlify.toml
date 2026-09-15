@@ -1,0 +1,56 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# --- RPC proxy -------------------------------------------------------------
+# Server-to-server forward to the Xeris node, so the browser can read chain
+# state from a same-origin path without tripping CORS. Mirrors the Vite dev
+# proxy in vite.config.js.
+#
+# Note the backend verification in netlify/lib/chain.js does NOT go through
+# this — it calls the node directly from the function, where the result cannot
+# be tampered with by the client.
+[[redirects]]
+  from = "/rpc/*"
+  to = "https://rpc.xerisweb.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/rpc"
+  to = "https://rpc.xerisweb.com/"
+  status = 200
+  force = true
+
+# --- SPA fallback (must be last) -------------------------------------------
+# Functions declare their own /api/* paths via `export const config`, which
+# Netlify resolves before this catch-all.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# --- Security headers ------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://rpc.xerisweb.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# API responses are per-wallet and change constantly — never let a CDN or a
+# phone browser hold on to them.
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
