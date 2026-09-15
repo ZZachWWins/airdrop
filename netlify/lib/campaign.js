@@ -18,6 +18,26 @@ export const NONCE_TTL_MS = 10 * 60 * 1000
 /** Current schema version of a stored verification record. */
 export const RECORD_VERSION = 1
 
+/**
+ * What a challenge is for. Stored on the nonce and checked at use, so a
+ * signature gathered for one purpose can never be presented as the other —
+ * a verification signature must not be replayable as a claim authorisation.
+ */
+export const PURPOSE = {
+  VERIFY: 'verify',
+  CLAIM: 'claim',
+}
+
+/**
+ * Whether the mainnet claim window is open. Defaults to closed: the claim
+ * endpoints stay shut until you deliberately open them at mainnet launch.
+ */
+export function claimPhase() {
+  return process.env.CLAIM_PHASE === 'open' ? 'open' : 'closed'
+}
+
+export const MAINNET_NETWORK_ID = process.env.XERIS_MAINNET_NETWORK_ID || 'xeris-mainnet'
+
 function randomCodeBody() {
   // rejection-free: 30 symbols, drawn from a byte each, modulo-biased by <2%,
   // which is irrelevant for a namespace this size.
@@ -87,6 +107,46 @@ export function buildChallengeMessage({ address, nonce, issuedAt, domain }) {
   ].join('\n')
 }
 
+/**
+ * The text signed to bind a mainnet payout address to a verified testnet
+ * wallet.
+ *
+ * The mainnet address is *inside* the signed text, and the server reads it
+ * back from the stored challenge rather than from the claim request. That is
+ * the whole security model of the claim: the signature does not merely prove
+ * "I hold the testnet key", it proves "I hold the testnet key AND I authorise
+ * this exact payout address". Nothing in the request can redirect the payout
+ * without invalidating the signature.
+ *
+ * The address is also shown in full, on its own line, because this is the one
+ * screen where a user must be able to eyeball where their tokens are going.
+ */
+export function buildClaimMessage({
+  testnetAddress,
+  mainnetAddress,
+  nonce,
+  issuedAt,
+  domain,
+}) {
+  return [
+    'Xeris Mainnet Airdrop Claim',
+    '',
+    'I am claiming my XRS mainnet airdrop for the testnet wallet below,',
+    'and I authorise it to be paid to this mainnet address:',
+    '',
+    `Pay to (mainnet): ${mainnetAddress}`,
+    '',
+    `Testnet wallet:   ${testnetAddress}`,
+    `Mainnet network:  ${MAINNET_NETWORK_ID}`,
+    `Site:             ${domain}`,
+    `Nonce:            ${nonce}`,
+    `Issued:           ${new Date(issuedAt).toISOString()}`,
+    '',
+    'Check the pay-to address carefully. Tokens sent there cannot be recovered.',
+    'Signing costs nothing and moves no funds from this wallet.',
+  ].join('\n')
+}
+
 // ── Public shapes ─────────────────────────────────────────────────────────
 
 /** Mask an address for display to someone who is not its owner. */
@@ -117,5 +177,26 @@ export function toPublicRecord(record, extra = {}) {
       checkedAt: record.onchain?.checkedAt ?? record.verifiedAt,
     },
     ...extra,
+  }
+}
+
+/**
+ * The claim binding, as shown to its owner.
+ *
+ * The mainnet address is returned in full and unmasked — it is the one value
+ * the user must be able to check against what they meant to type, and masking
+ * it would hide exactly the typo that loses their tokens.
+ */
+export function toPublicClaim(claim) {
+  if (!claim) return null
+  return {
+    testnetAddress: claim.testnetAddress,
+    mainnetAddress: claim.mainnetAddress,
+    claimedAt: claim.claimedAt,
+    updatedAt: claim.updatedAt ?? claim.claimedAt,
+    rebindCount: claim.history?.length ?? 0,
+    paidAt: claim.paidAt ?? null,
+    payoutTxId: claim.payoutTxId ?? null,
+    status: claim.paidAt ? 'paid' : 'pending',
   }
 }

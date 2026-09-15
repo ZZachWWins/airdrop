@@ -1,5 +1,6 @@
 import { NETWORK_ID } from '../lib/chain.js'
-import { listAllReferralEdges, listVerifications } from '../lib/storage.js'
+import { MAINNET_NETWORK_ID } from '../lib/campaign.js'
+import { getClaim, listAllReferralEdges, listVerifications } from '../lib/storage.js'
 import { error, json, methodNotAllowed } from '../lib/http.js'
 
 /**
@@ -38,25 +39,39 @@ export default async function handler(request) {
     referralCounts.set(referrer, (referralCounts.get(referrer) ?? 0) + 1)
   }
 
-  const entries = records
-    .map((record) => ({
-      address: record.address,
-      verifiedAt: record.verifiedAt,
-      network: record.network,
-      inviteCode: record.inviteCode,
-      referredByCode: record.referredByCode ?? null,
-      referredByAddress: record.referredByAddress ?? null,
-      referralCount: referralCounts.get(record.address) ?? 0,
-      onchain: record.onchain,
-      ...(includeProof ? { proof: record.proof } : {}),
-    }))
-    .sort((a, b) => a.verifiedAt - b.verifiedAt)
+  const entries = (
+    await Promise.all(
+      records.map(async (record) => {
+        const claim = await getClaim(record.address)
+        return {
+          address: record.address,
+          verifiedAt: record.verifiedAt,
+          network: record.network,
+          inviteCode: record.inviteCode,
+          referredByCode: record.referredByCode ?? null,
+          referredByAddress: record.referredByAddress ?? null,
+          referralCount: referralCounts.get(record.address) ?? 0,
+          onchain: record.onchain,
+          // The mainnet payout binding, once the holder has authorised one.
+          mainnetAddress: claim?.mainnetAddress ?? null,
+          claimedAt: claim?.claimedAt ?? null,
+          paidAt: claim?.paidAt ?? null,
+          payoutTxId: claim?.payoutTxId ?? null,
+          ...(includeProof
+            ? { proof: record.proof, claimProof: claim?.proof ?? null }
+            : {}),
+        }
+      }),
+    )
+  ).sort((a, b) => a.verifiedAt - b.verifiedAt)
 
   return json({
     network: NETWORK_ID,
+    mainnetNetwork: MAINNET_NETWORK_ID,
     exportedAt: new Date().toISOString(),
     totalVerified: entries.length,
     totalReferrals: edges.length,
+    totalClaimed: entries.filter((entry) => entry.mainnetAddress).length,
     entries,
   })
 }

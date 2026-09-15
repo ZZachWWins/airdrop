@@ -1,5 +1,6 @@
 import { cached } from '../lib/cache.js'
 import { NETWORK_ID } from '../lib/chain.js'
+import { MAINNET_NETWORK_ID, claimPhase } from '../lib/campaign.js'
 import {
   countVerifications,
   listAllReferralEdges,
@@ -43,6 +44,10 @@ export default async function handler(request) {
 
   return json({
     network: NETWORK_ID,
+    // Drives whether the app shows the claim route at all, so the frontend
+    // never has to be redeployed to open or close the window.
+    claimPhase: claimPhase(),
+    mainnetNetwork: MAINNET_NETWORK_ID,
     totalVerified,
     totalReferrals,
     ...breakdown,

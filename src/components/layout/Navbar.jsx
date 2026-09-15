@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { ConnectButton } from '../wallet/ConnectButton'
 import { XerisMark } from '../ui/XerisMark'
+import { useStats } from '../../hooks/useStats'
 import './Navbar.css'
 
 const LINKS = [
@@ -12,9 +13,16 @@ const LINKS = [
   { to: '/faq', label: 'FAQ' },
 ]
 
+const CLAIM_LINK = { to: '/claim', label: 'Claim', highlight: true }
+
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const closeMenu = () => setIsMenuOpen(false)
+
+  // The server decides whether the claim window is open, so opening it is an
+  // environment-variable change, not a redeploy of the frontend.
+  const { stats } = useStats()
+  const links = stats?.claimPhase === 'open' ? [...LINKS, CLAIM_LINK] : LINKS
 
   return (
     <nav className="navbar">
@@ -25,13 +33,15 @@ export const Navbar = () => {
         </Link>
 
         <div className={`navbar-links ${isMenuOpen ? 'mobile-open' : ''}`}>
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.end}
               onClick={closeMenu}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              className={({ isActive }) =>
+                `nav-link ${isActive ? 'active' : ''} ${link.highlight ? 'highlight' : ''}`
+              }
             >
               {link.label}
             </NavLink>

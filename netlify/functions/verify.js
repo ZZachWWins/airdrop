@@ -3,6 +3,7 @@ import { verifySignature } from '../lib/ed25519.js'
 import { buildChainSnapshot, NodeUnreachableError } from '../lib/chain.js'
 import {
   NONCE_TTL_MS,
+  PURPOSE,
   RECORD_VERSION,
   generateUniqueCode,
   normaliseCode,
@@ -89,6 +90,13 @@ export default async function handler(request) {
     await burnNonce(nonce)
     return error('This challenge was issued for a different address.', 400, {
       reason: 'nonce_address_mismatch',
+    })
+  }
+  // A claim authorisation must never be spendable as a verification.
+  if ((challenge.purpose ?? PURPOSE.VERIFY) !== PURPOSE.VERIFY) {
+    await burnNonce(nonce)
+    return error('This challenge was issued for a different purpose.', 400, {
+      reason: 'nonce_purpose_mismatch',
     })
   }
   if (Date.now() - challenge.issuedAt > NONCE_TTL_MS) {

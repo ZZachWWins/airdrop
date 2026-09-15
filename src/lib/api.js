@@ -68,3 +68,28 @@ export function fetchLeaderboard(limit = 25) {
 export function lookupInvite(code) {
   return request(`/invite?code=${encodeURIComponent(code)}`)
 }
+
+// ── Mainnet claim ──────────────────────────────────────────────────────────
+
+export function fetchClaimStatus(address) {
+  return request(`/claim?address=${encodeURIComponent(address)}`)
+}
+
+/**
+ * The payout address goes in at challenge time, not claim time — it has to be
+ * inside the text the wallet signs. The returned `message` is what the user
+ * will be shown and asked to approve.
+ */
+export function requestClaimChallenge({ address, mainnetAddress }) {
+  return request('/claim/challenge', {
+    method: 'POST',
+    body: JSON.stringify({ address, mainnetAddress }),
+  })
+}
+
+export function submitClaim({ address, nonce, signature }) {
+  return request('/claim', {
+    method: 'POST',
+    body: JSON.stringify({ address, nonce, signature }),
+  })
+}

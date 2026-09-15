@@ -1,5 +1,5 @@
 import { isValidAddress } from '../lib/base58.js'
-import { buildChallengeMessage, createNonce, NONCE_TTL_MS } from '../lib/campaign.js'
+import { buildChallengeMessage, createNonce, NONCE_TTL_MS, PURPOSE } from '../lib/campaign.js'
 import { putNonce } from '../lib/storage.js'
 import { error, json, methodNotAllowed, readJson, siteDomain } from '../lib/http.js'
 
@@ -31,7 +31,7 @@ export default async function handler(request) {
     domain: siteDomain(request),
   })
 
-  await putNonce(nonce, { address, message, issuedAt })
+  await putNonce(nonce, { address, message, issuedAt, purpose: PURPOSE.VERIFY })
 
   return json({ nonce, message, expiresAt: issuedAt + NONCE_TTL_MS })
 }

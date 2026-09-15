@@ -150,6 +150,11 @@ registry should not be callable from arbitrary origins.
 | `GET` | `/api/stats` | Campaign totals and activity breakdown |
 | `GET` | `/api/leaderboard?limit=` | Top referrers, masked addresses |
 | `GET` | `/api/invite?code=` | Validate a code, return the masked referrer |
+| `POST` | `/api/claim/challenge` | `{ address, mainnetAddress }` → challenge with the payout address baked in |
+| `GET` | `/api/claim?address=` | Eligibility and current payout binding |
+| `POST` | `/api/claim` | `{ address, nonce, signature }` → record the binding |
+| `GET` | `/api/payouts` | Payout list — **admin**; `?verify=1` re-checks every proof |
+| `POST` | `/api/payouts` | `{ payments: [{ testnetAddress, txId }] }` → mark paid — **admin** |
 | `GET` | `/api/export` | Full registry — **requires `Authorization: Bearer $ADMIN_TOKEN`** |
 
 `/api/verify` failure reasons, as `{ error, reason }`:
@@ -180,10 +185,18 @@ Four Blobs stores, all opened with strong consistency:
 
 | Store | Key | Value |
 | :--- | :--- | :--- |
-| `verifications` | address | the full record, including `proof` |
+| `verifications` | testnet address | the full record, including `proof` |
 | `codes` | `XRS-A1B2C3` | `{ address, createdAt }` |
-| `nonces` | nonce | `{ address, message, issuedAt }` |
+| `nonces` | nonce | `{ address, message, issuedAt, purpose }` |
 | `referrals` | `referrer/referee` | `{ at }` |
+| `claims` | testnet address | payout binding + `proof` + `history` |
+| `mainnetLinks` | `mainnetAddr/testnetAddr` | `{ at }` |
+
+Nothing is ever deleted: a re-verification updates the on-chain snapshot in
+place and leaves `verifiedAt`, the invite code and referral attribution alone,
+and a re-bound claim pushes the old address into `history` with its original
+proof rather than overwriting it. The registry only grows, which is what you
+want from something that has to still be defensible at mainnet.
 
 **Referral counts are derived, not incremented.** One blob per edge means two
 people redeeming the same code at the same instant cannot clobber each other —
@@ -191,20 +204,111 @@ there is no read-modify-write to lose.
 
 ---
 
-## The mainnet claim path
+## Who signed, and how we know
 
-When XRS launches:
+The address **is** the public key. A Xeris address is a base58-encoded 32-byte
+ed25519 public key, so the record is keyed by the very thing needed to check
+its own signature — there is no separate account, password or identity to
+join against.
 
-```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  "https://<site>/api/export?proof=1" > registry.json
+Each verification stores the exact message that was issued and the signature
+over it:
+
+```json
+{
+  "address": "7xQp…3kAf",
+  "verifiedAt": 1757900000000,
+  "proof": {
+    "message": "Xeris Testnet Verification\n…\nAddress: 7xQp…3kAf\nNonce: …",
+    "signature": "base64…",
+    "nonce": "…"
+  }
+}
 ```
 
-Every entry carries the address, verification time, invite code, referrer,
-referral count, the on-chain snapshot, and the signed message plus signature.
-Re-verify the whole list offline with `netlify/lib/ed25519.js` before turning it
-into an allowlist or Merkle root — the export is only as trustworthy as the
-proofs in it, and they are all there precisely so you can check.
+That makes the registry **self-authenticating**: you do not have to trust the
+database, or us, or Netlify. Anyone holding the export can re-run
+`verifySignature(address, proof.message, proof.signature)` and confirm every
+row independently. A forged row is not possible without the corresponding
+private key, and a tampered row fails verification.
+
+`GET /api/payouts?verify=1` runs that check server-side over the whole list and
+reports `proofsInvalid`, so you can sanity-check before a distribution without
+a separate offline pass.
+
+---
+
+## The mainnet claim path
+
+Testnet and mainnet wallets are different keypairs, so the claim binds one to
+the other with a signature.
+
+At launch, set `CLAIM_PHASE=open`. A Claim tab appears (the frontend reads the
+phase from `/api/stats`, so this is an env var change, not a redeploy). Then:
+
+```
+ user                          /api/claim/challenge              /api/claim
+ ────                          ────────────────────              ──────────
+ connects TESTNET wallet
+ pastes MAINNET address ────▶  message includes BOTH,
+                               nonce stores mainnetAddress
+                          ◀──  { nonce, message }
+ wallet shows the full
+ pay-to address, user signs
+                                                       ────────▶ verify sig
+                                                                 read mainnetAddress
+                                                                 FROM THE NONCE
+                                                                 write binding
+```
+
+**The payout address lives inside the signed text**, and `/api/claim` reads it
+back off the stored challenge — it ignores any `mainnetAddress` in the request
+body entirely (there is a test asserting exactly that). So the signature does
+not merely prove "I hold the testnet key"; it proves "I hold the testnet key
+*and* I authorise this exact address". No layer between the wallet and the
+registry can redirect a payout without invalidating the signature.
+
+Other guarantees:
+
+- **Purposes are separated.** Every nonce carries `purpose: verify | claim`,
+  checked at use, so a verification signature can never be replayed as a payout
+  authorisation, or vice versa.
+- **Only verified wallets can claim**, checked *before* a challenge is issued
+  so an ineligible wallet is told immediately rather than after signing.
+- **Re-binding is allowed while unpaid** — people mistype addresses — and each
+  previous binding is kept in `history` with its own proof. Once `paidAt` is
+  set the binding is frozen.
+- **The testnet address is rejected as a payout address**, since the two
+  keypairs differ; pasting it is a mistake that would strand the tokens.
+
+### Running the distribution
+
+```bash
+# 1. Pull the payout list, re-verifying every authorisation server-side.
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "https://<site>/api/payouts?verify=1" > payouts.json
+
+# 2. Send the tokens from wherever your treasury key lives.
+
+# 3. Mark them paid so a re-run cannot double-pay.
+curl -X POST -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"payments":[{"testnetAddress":"7xQp…","txId":"…"}]}' \
+  "https://<site>/api/payouts"
+```
+
+Each entry carries `mainnetAddress`, `referralCount`, `testnetActivity`,
+`verifiedAtBlock` and `walletsPayingToThisAddress` — enough to size an
+allocation and to spot one payout address collecting from suspiciously many
+testnet wallets.
+
+**This app deliberately does not send tokens.** Paying out needs a hot key with
+the treasury behind it, and that does not belong in a public web function. The
+export/mark-paid split keeps that key wherever you actually trust it. Marking
+is idempotent, so an interrupted run is safe to repeat.
+
+`GET /api/export?proof=1` remains the full archive: verification proofs,
+claim proofs, referral graph and payout state in one document.
 
 ---
 
@@ -229,20 +333,25 @@ only ones in play. If the campaign attracts scripted traffic, rate-limit
 
 ```
 netlify/
-  functions/      challenge, verify, status, stats, leaderboard, invite, export
+  functions/      challenge, verify, status, stats, leaderboard, invite,
+                  claim-challenge, claim, payouts, export
   lib/            base58, ed25519, chain, storage, campaign, http, cache
 src/
   components/     ui/ layout/ wallet/ verify/ referral/
   context/        WalletContext, CampaignContext, ToastContext
-  lib/            api, config, referral, inviteCode, device, encoding
-  pages/          Home, Dashboard, Leaderboard, Faq, ReferralLanding, NotFound
-tests/            crypto units + API integration
+  hooks/          useStats, useClaim
+  lib/            api, config, referral, inviteCode, address, device, encoding
+  pages/          Home, Dashboard, Leaderboard, Claim, Faq,
+                  ReferralLanding, NotFound
+tests/            crypto units + API and claim integration
 ```
 
-`src/lib/inviteCode.js` deliberately mirrors the code format in
-`netlify/lib/campaign.js` — the bundle and the functions are separate build
-targets. The server is the authority; the client copy only catches typos before
-a signature is spent. **If the format changes, change both.**
+Two client files deliberately mirror server logic, because the bundle and the
+functions are separate build targets: `src/lib/inviteCode.js` (code format) and
+`src/lib/address.js` (address validation). The server is always the authority;
+the client copies exist so a typo is caught *before* a signature is spent —
+which on the claim form is the difference between a corrected address and lost
+tokens. **If either format changes, change both sides.**
 
 ---
 
