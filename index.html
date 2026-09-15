@@ -2,25 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/mark.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#010414" />
-    <title>Xeris Testnet Verification — Claim your place in the XRS airdrop</title>
+
+    <title>Xeris Airdrop — Verify your testnet wallet, claim XRS at mainnet</title>
     <meta
       name="description"
-      content="Verify your Xeris Web4 wallet on testnet to lock in eligibility for the XRS mainnet airdrop, and invite friends to earn referral credit."
+      content="Verify your Xeris Web4 wallet on testnet with a single signature, anchored to a live testnet block, to register for the XRS mainnet airdrop. Invite friends and earn tracked referral credit."
     />
-    <meta property="og:title" content="Xeris Testnet Verification" />
+    <link rel="canonical" href="%SITE_URL%/" />
+
+    <!-- Icons. The SVG mark scales for browser tabs; the PNGs are what iOS and
+         Android composite onto a home screen. -->
+    <link rel="icon" type="image/svg+xml" href="/mark.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#010414" />
+    <meta name="apple-mobile-web-app-title" content="Xeris Airdrop" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Open Graph. Scrapers will not resolve a relative image, so these are
+         absolute — %SITE_URL% is substituted at build time from Netlify's own
+         URL env var (see vite.config.js). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Xeris Airdrop" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:title" content="Verify your testnet wallet. Claim XRS at mainnet." />
     <meta
       property="og:description"
-      content="Verify your Xeris Web4 wallet on testnet to lock in eligibility for the XRS mainnet airdrop."
+      content="One signature from your Xeris Web4 wallet, anchored to a live testnet block. No gas, no transaction."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logos/LogoDark.png" />
+    <meta property="og:image" content="%SITE_URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Xeris Airdrop — verify your testnet wallet, claim XRS at mainnet."
+    />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Verify your testnet wallet. Claim XRS at mainnet." />
+    <meta
+      name="twitter:description"
+      content="One signature from your Xeris Web4 wallet, anchored to a live testnet block. No gas, no transaction."
+    />
+    <meta name="twitter:image" content="%SITE_URL%/og.png" />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      This app verifies a wallet signature in the browser and needs JavaScript enabled.
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

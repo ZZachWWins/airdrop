@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Invite links are per-person and carry a referral code — there is nothing to
+# index, and crawling them would scatter dead codes through search results.
+Disallow: /r/
+
+# Campaign data. Public endpoints return only masked addresses, but none of it
+# belongs in a search index.
+Disallow: /api/
