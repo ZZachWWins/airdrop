@@ -1,3 +1,53 @@
+.home {
+    position: relative;
+    isolation: isolate;
+}
+
+/* ── Depth ─────────────────────────────────────────────────────────────── */
+/* One soft brand glow plus a masked grid, matching the share card. Both sit
+   behind everything and are inert; the page reads flat without them. */
+
+.hero-glow {
+    position: absolute;
+    top: -420px;
+    right: -320px;
+    width: 1100px;
+    height: 1100px;
+    background: radial-gradient(circle, rgba(0, 25, 165, 0.42) 0%, rgba(0, 25, 165, 0) 62%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.hero-grid-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 820px;
+    background-image:
+        linear-gradient(rgba(143, 163, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(143, 163, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(160deg, #000 0%, transparent 68%);
+    -webkit-mask-image: linear-gradient(160deg, #000 0%, transparent 68%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@media (max-width: 768px) {
+    .hero-glow {
+        top: -340px;
+        right: -280px;
+        width: 760px;
+        height: 760px;
+    }
+
+    .hero-grid-texture {
+        height: 560px;
+        background-size: 48px 48px;
+    }
+}
+
 .home .hero {
     padding-bottom: 5rem;
 }
@@ -18,33 +68,8 @@
 
 /* ── Copy ──────────────────────────────────────────────────────────────── */
 
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.6rem;
-    font-weight: 900;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--brand-accent);
-    border: 1px solid rgba(143, 163, 255, 0.3);
-    border-radius: var(--radius-sm);
-    padding: 5px 10px;
+.hero-copy .network-badge {
     margin-bottom: 1.75rem;
-}
-
-@keyframes hero-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-}
-
-.hero-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--status-success);
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.7);
-    animation: hero-pulse 2s ease-in-out infinite;
 }
 
 .hero-title {
@@ -74,9 +99,30 @@
     gap: 1rem;
 }
 
-@media (max-width: 520px) {
+/* Stays three across on phones rather than stacking. Stacked, these three
+   tiles pushed the verify panel most of a screen further down — the numbers
+   are context, not the thing people came to do. */
+@media (max-width: 560px) {
     .hero-stats {
-        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .hero-stats .stat-tile {
+        padding: 0.85rem 0.7rem;
+    }
+
+    .hero-stats .stat-label {
+        font-size: 0.5rem;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.4rem;
+        /* Reserve two lines whether or not a label wraps, so the three
+           numbers sit on one baseline instead of stepping. */
+        line-height: 1.15;
+        min-height: 2.3em;
+    }
+
+    .hero-stats .stat-value {
+        font-size: 1.25rem;
     }
 }
 
@@ -171,4 +217,87 @@
 
 .how-more:hover {
     gap: 0.8rem;
+}
+
+/* ── Trust ─────────────────────────────────────────────────────────────── */
+
+.trust {
+    padding-top: 5rem;
+    margin-top: 5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+    .trust {
+        padding-top: 3rem;
+        margin-top: 3rem;
+    }
+}
+
+.trust-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .trust-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+/* The signed message stays in view while the guarantees beside it scroll —
+   it is the evidence for every claim in that list. */
+.trust-preview {
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+}
+
+@media (max-width: 960px) {
+    .trust-preview {
+        position: static;
+    }
+}
+
+.trust-list {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.trust-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.trust-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border: 1px solid rgba(143, 163, 255, 0.28);
+    border-radius: var(--radius-sm);
+    color: var(--brand-accent);
+    background: rgba(10, 18, 61, 0.5);
+}
+
+.trust-list h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+    line-height: 1.4;
+}
+
+.trust-list p {
+    font-size: 0.83rem;
+    line-height: 1.75;
+    margin: 0;
 }

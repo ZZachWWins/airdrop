@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Fingerprint, Radio, Users } from 'lucide-react'
+import { ArrowRight, Blocks, Fingerprint, KeyRound, Radio, Users } from 'lucide-react'
 import { VerifyPanel } from '../components/verify/VerifyPanel'
+import { SignaturePreview } from '../components/verify/SignaturePreview'
 import { StatTile } from '../components/ui/StatTile'
+import { NetworkBadge } from '../components/ui/NetworkBadge'
 import { Card } from '../components/ui/Card'
 import { XerisMark } from '../components/ui/XerisMark'
 import { useStats } from '../hooks/useStats'
@@ -27,11 +29,38 @@ const STEPS = [
   },
 ]
 
+// The mechanism, stated precisely. Every line here is something a sceptical
+// reader could go and check, which is the only kind of trust claim worth
+// printing.
+const GUARANTEES = [
+  {
+    icon: <KeyRound size={17} />,
+    title: 'Your address is your public key',
+    body: 'A Xeris address is an ed25519 public key. Every record is stored with the exact message that was signed, so anyone holding the export can re-verify the whole registry themselves — no trust in us required.',
+  },
+  {
+    icon: <Blocks size={17} />,
+    title: 'Anchored to a real block',
+    body: `Verification is not just a signature. The server queries the ${NETWORK_LABEL} node directly and stamps your record with the block height it saw — a value your browser has no way to fabricate.`,
+  },
+  {
+    icon: <Fingerprint size={17} />,
+    title: 'Signatures, never approvals',
+    body: 'Nothing here asks for a transaction, a spend allowance or a contract call. The challenge is single-use and expires in ten minutes, so a captured signature is worth nothing later.',
+  },
+]
+
 export function Home() {
   const { stats, loading } = useStats()
+  const pending = loading && !stats
 
   return (
     <div className="page home">
+      {/* Depth layers behind the hero — the same glow and grid the share card
+          uses, so the page and the link preview read as one thing. */}
+      <div className="hero-glow" aria-hidden="true" />
+      <div className="hero-grid-texture" aria-hidden="true" />
+
       <section className="container hero">
         <div className="hero-grid">
           <motion.div
@@ -40,10 +69,7 @@ export function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="hero-badge">
-              <span className="hero-dot" />
-              {NETWORK_LABEL} is live
-            </div>
+            <NetworkBadge />
 
             <h1 className="hero-title">
               Verify your testnet wallet.
@@ -52,26 +78,26 @@ export function Home() {
             </h1>
 
             <p className="hero-sub">
-              Every wallet that verifies on {NETWORK_LABEL} now is recorded in a signed, on-chain
-              anchored registry. That registry becomes the claim list when {TOKEN_SYMBOL} launches
-              on mainnet. One signature, no gas, no transaction.
+              Every wallet that verifies on {NETWORK_LABEL} is recorded in a signed registry,
+              anchored to the block it was seen at. That registry becomes the claim list when{' '}
+              {TOKEN_SYMBOL} launches on mainnet. One signature, no gas, no transaction.
             </p>
 
             <div className="hero-stats">
               <StatTile
                 label="Wallets verified"
                 value={(stats?.totalVerified ?? 0).toLocaleString()}
-                loading={loading && !stats}
+                loading={pending}
               />
               <StatTile
                 label="Referrals"
                 value={(stats?.totalReferrals ?? 0).toLocaleString()}
-                loading={loading && !stats}
+                loading={pending}
               />
               <StatTile
                 label="Last 24h"
                 value={(stats?.verifiedLast24h ?? 0).toLocaleString()}
-                loading={loading && !stats}
+                loading={pending}
               />
             </div>
           </motion.div>
@@ -106,10 +132,42 @@ export function Home() {
             </Card>
           ))}
         </div>
+      </section>
 
-        <Link to="/faq" className="how-more">
-          What happens at mainnet? <ArrowRight size={14} />
-        </Link>
+      {/* The transparency section. A signature prompt is exactly where a user
+          should be suspicious, so show the text up front rather than asking
+          them to take it on faith at the moment their wallet opens. */}
+      <section className="container trust">
+        <div className="trust-grid">
+          <div className="trust-copy">
+            <p className="eyebrow">Why you can trust it</p>
+            <h2 className="section-title">Read the message before you sign it</h2>
+            <p className="section-sub">
+              Every safe signature request looks like every unsafe one until you read it. Here is
+              the exact text your wallet will show, published before you connect anything.
+            </p>
+
+            <ul className="trust-list">
+              {GUARANTEES.map((item) => (
+                <li key={item.title}>
+                  <span className="trust-icon">{item.icon}</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <Link to="/faq" className="how-more">
+              Read the full FAQ <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="trust-preview">
+            <SignaturePreview />
+          </div>
+        </div>
       </section>
     </div>
   )
