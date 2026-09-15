@@ -1,0 +1,65 @@
+.sigpreview {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-sm);
+    background: rgba(1, 4, 20, 0.6);
+    overflow: hidden;
+}
+
+.sigpreview-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(10, 18, 61, 0.5);
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+}
+
+.sigpreview-head svg {
+    color: var(--brand-accent);
+    flex-shrink: 0;
+}
+
+.sigpreview-body {
+    margin: 0;
+    padding: 1.1rem 1.15rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.85;
+    color: var(--text-body);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 420px) {
+    .sigpreview-body {
+        font-size: 0.64rem;
+        padding: 0.9rem;
+    }
+}
+
+.sigpreview-body .sig-title {
+    color: var(--brand-light);
+    font-weight: 700;
+}
+
+.sigpreview-body .sig-field {
+    color: var(--brand-accent);
+}
+
+.sigpreview-body .sig-note {
+    color: var(--text-muted);
+}
+
+.sigpreview-foot {
+    margin: 0;
+    padding: 0.9rem 1.15rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.74rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+}

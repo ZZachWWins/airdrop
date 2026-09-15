@@ -61,6 +61,11 @@ export function fetchStats() {
   return request('/stats')
 }
 
+/** Live chain tip from the node verifications are checked against. */
+export function fetchNetwork() {
+  return request('/network')
+}
+
 export function fetchLeaderboard(limit = 25) {
   return request(`/leaderboard?limit=${limit}`)
 }

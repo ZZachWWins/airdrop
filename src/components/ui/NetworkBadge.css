@@ -1,0 +1,66 @@
+.network-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    border: 1px solid rgba(143, 163, 255, 0.28);
+    border-radius: var(--radius-sm);
+    padding: 6px 11px;
+    background: rgba(10, 18, 61, 0.45);
+}
+
+.network-badge.degraded {
+    color: var(--status-warn);
+    border-color: rgba(255, 183, 77, 0.3);
+}
+
+.network-badge.pending {
+    color: var(--brand-muted);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+@keyframes network-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.network-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: currentColor;
+}
+
+.network-badge.live .network-dot {
+    background: var(--status-success);
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.7);
+    animation: network-pulse 2s ease-in-out infinite;
+}
+
+.network-sep {
+    width: 1px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.14);
+    flex-shrink: 0;
+}
+
+.network-block {
+    /* Tabular figures stop the badge jittering as the block number ticks. */
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    color: var(--text-body);
+    font-weight: 700;
+}
+
+@media (max-width: 420px) {
+    .network-badge {
+        font-size: 0.55rem;
+        letter-spacing: 0.15em;
+        gap: 0.45rem;
+    }
+}

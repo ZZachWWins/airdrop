@@ -27,6 +27,9 @@
     color: var(--brand-light);
     margin: 0;
     line-height: 1.1;
+    /* Tabular figures keep the tiles from reflowing every time a polled
+       number changes width. */
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-hint {
