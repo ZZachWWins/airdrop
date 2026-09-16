@@ -17,6 +17,7 @@
     "@netlify/blobs": "^8.1.0",
     "framer-motion": "^12.30.1",
     "lucide-react": "^0.563.0",
+    "qrcode-generator": "^2.0.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0"

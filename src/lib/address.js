@@ -17,7 +17,7 @@ const INDEX = (() => {
   return map
 })()
 
-function base58Decode(str) {
+export function base58Decode(str) {
   const bytes = [0]
   for (const char of str) {
     const value = INDEX.get(char)

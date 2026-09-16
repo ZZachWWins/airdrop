@@ -1,20 +1,30 @@
 import { useState } from 'react'
 import { Apple, Check, Copy, Smartphone, ExternalLink } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { QrHandoff } from './QrHandoff'
 import { APP_STORE_URL, PLAY_STORE_URL, WALLET_SITE_URL, buildDeeplink } from '../../lib/config'
 import { isAndroid, isIOS, isMobile } from '../../lib/device'
 import './WalletGate.css'
 
 /**
  * Shown when the page is open somewhere the Xeris provider is not injected.
- * Verification requires a signature from the Xeris Web4 wallet, so the only
- * way forward is to reopen this URL inside the app — this panel makes that
- * as short a path as we can manage on each platform.
+ *
+ * There are two genuinely different situations here, and conflating them is
+ * what makes this panel read as an error:
+ *
+ *  - On **desktop** there is no Xeris wallet at all, and there never will be
+ *    — the key lives in the mobile app. This is not a failure, it is a
+ *    handoff, so desktop gets a QR code and is told plainly that verifying
+ *    happens on a phone.
+ *  - On **mobile**, the user probably does have the app and is simply in the
+ *    wrong browser, so the job is to get them into Xeris Web4 with the URL
+ *    intact.
  */
 export function WalletGate() {
   const [copied, setCopied] = useState(false)
   const pageUrl = typeof window === 'undefined' ? '' : window.location.href
   const deeplink = buildDeeplink(pageUrl)
+  const onMobile = isMobile()
 
   const copyLink = async () => {
     try {
@@ -30,25 +40,47 @@ export function WalletGate() {
 
   return (
     <div className="wallet-gate">
-      <p className="eyebrow">Wallet required</p>
-      <h3 className="wallet-gate-title">Open this page in Xeris Web4</h3>
+      <p className="eyebrow">{onMobile ? 'Wallet required' : 'Continue on your phone'}</p>
+      <h3 className="wallet-gate-title">
+        {onMobile ? 'Open this page in Xeris Web4' : 'Verifying happens on mobile'}
+      </h3>
       <p className="wallet-gate-copy">
-        Verification is a signature from your Xeris wallet key, so it has to happen inside the
-        Xeris Web4 browser on {isMobile() ? 'your phone' : 'iOS or Android'}. Nothing is spent and
-        no transaction is broadcast.
+        {onMobile ? (
+          <>
+            Verification is a signature from your Xeris wallet key, so it has to happen inside the
+            Xeris Web4 browser. Nothing is spent and no transaction is broadcast.
+          </>
+        ) : (
+          <>
+            Your Xeris key lives in the Xeris Web4 app on iOS and Android, so there is nothing to
+            install on desktop. Scan the code below to carry this page — and your invite code —
+            straight to your phone.
+          </>
+        )}
       </p>
 
-      {deeplink && isMobile() && (
-        <Button variant="accent" size="lg" className="btn-block" onClick={() => { window.location.href = deeplink }}>
+      {!onMobile && <QrHandoff url={pageUrl} />}
+
+      {deeplink && onMobile && (
+        <Button
+          variant="accent"
+          size="lg"
+          className="btn-block"
+          onClick={() => {
+            window.location.href = deeplink
+          }}
+        >
           <Smartphone size={16} /> Open in Xeris Web4
         </Button>
       )}
 
-      <ol className="wallet-gate-steps">
-        <li>Open the Xeris Web4 app.</li>
-        <li>Tap the browser tab and paste the link below.</li>
-        <li>Come back here and hit Connect.</li>
-      </ol>
+      {onMobile && (
+        <ol className="wallet-gate-steps">
+          <li>Open the Xeris Web4 app.</li>
+          <li>Tap the browser tab and paste the link below.</li>
+          <li>Come back here and hit Connect.</li>
+        </ol>
+      )}
 
       <div className="wallet-gate-url">
         <code>{pageUrl}</code>
@@ -59,12 +91,12 @@ export function WalletGate() {
       {copied && <p className="wallet-gate-copied">Link copied.</p>}
 
       <div className="wallet-gate-stores">
-        {APP_STORE_URL && (!isMobile() || isIOS()) && (
+        {APP_STORE_URL && (!onMobile || isIOS()) && (
           <a href={APP_STORE_URL} target="_blank" rel="noreferrer noopener" className="store-link">
             <Apple size={14} /> App Store
           </a>
         )}
-        {PLAY_STORE_URL && (!isMobile() || isAndroid()) && (
+        {PLAY_STORE_URL && (!onMobile || isAndroid()) && (
           <a href={PLAY_STORE_URL} target="_blank" rel="noreferrer noopener" className="store-link">
             <Smartphone size={14} /> Google Play
           </a>
