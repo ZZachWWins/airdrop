@@ -3,6 +3,7 @@ import { Check, Copy, X } from 'lucide-react'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { useWallet } from '../context/WalletContext'
+import { findXerisProvider, listForeignWallets } from '../lib/provider'
 import { getCspViolations } from '../lib/cspReport'
 import { fetchNetwork } from '../lib/api'
 import { toSignatureBytes } from '../lib/signature'
@@ -25,14 +26,14 @@ const GLOBALS = ['xeris', 'solana', 'xerisWallet', 'XerisWallet', 'ethereum']
 const PROVIDER_METHODS = ['connect', 'disconnect', 'signMessage', 'signTransaction', 'on', 'off']
 
 /**
- * Read the live global rather than a value captured at render. The provider
+ * Read the live globals rather than a value captured at render. The provider
  * can inject seconds after mount — a stale read here would report "no
  * provider" on a device that has one, which is the exact class of bug this
  * page exists to diagnose.
  */
-function liveProvider() {
-  if (typeof window === 'undefined') return undefined
-  return window.xeris || window.solana || window.xerisWallet || window.XerisWallet
+function liveMatch() {
+  if (typeof window === 'undefined') return null
+  return findXerisProvider(window, navigator.userAgent)
 }
 
 function describe(value) {
@@ -71,7 +72,9 @@ export function Diagnostics() {
   // rather than whatever existed at mount.
   const { walletProvider, isDetecting } = useWallet()
   const found = GLOBALS.filter((name) => typeof window[name] !== 'undefined')
-  const provider = walletProvider ?? liveProvider()
+  const match = liveMatch()
+  const provider = walletProvider ?? match?.provider
+  const foreign = listForeignWallets(window)
   const violations = getCspViolations()
 
   const report = {
@@ -84,6 +87,9 @@ export function Diagnostics() {
       ? PROVIDER_METHODS.filter((m) => typeof provider[m] === 'function')
       : [],
     isXerisFlag: provider?.isXeris ?? null,
+    matchedVia: match?.via ?? null,
+    matchedReason: match?.reason ?? null,
+    otherWalletsOnPage: foreign,
     cspViolations: violations,
     signTest,
     apiTest,
@@ -105,12 +111,15 @@ export function Diagnostics() {
     setSignTest({ state: 'running' })
     try {
       // Read it again at click time — detection may have completed since.
-      const active = liveProvider() ?? provider
+      const active = liveMatch()?.provider ?? provider
       if (!active) {
+        const others = listForeignWallets(window)
         throw new Error(
           isDetecting
             ? 'Still looking for a wallet provider — wait a moment and try again.'
-            : 'No wallet provider found on this page.',
+            : others.length
+              ? `No Xeris wallet found. ${others.join(' and ')} ${others.length > 1 ? 'are' : 'is'} installed, but this page will not connect another wallet.`
+              : 'No wallet provider found on this page.',
         )
       }
       const address = await active.connect()
@@ -163,9 +172,17 @@ export function Diagnostics() {
         <Row label="Secure context (https)" ok={window.isSecureContext} detail={window.location.protocol} />
         <Row label="Wallet global present" ok={found.length > 0} detail={found.join(', ') || 'none'} />
         <Row
-          label="isXeris flag"
-          ok={provider ? Boolean(provider.isXeris) : null}
-          detail={provider ? String(provider.isXeris) : 'no provider'}
+          label="Xeris provider matched"
+          ok={Boolean(provider)}
+          detail={match ? `window.${match.via} — ${match.reason}` : 'no match'}
+        />
+        {/* Other wallets sharing window.solana are the reason detection is
+            identity-based. Seeing them listed here, and ignored, is the
+            answer to "why is it prompting Phantom". */}
+        <Row
+          label="Other wallets on page"
+          ok={null}
+          detail={foreign.length ? `${foreign.join(', ')} (ignored)` : 'none'}
         />
         <Row
           label="signMessage available"
