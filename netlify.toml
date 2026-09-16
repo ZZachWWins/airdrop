@@ -41,7 +41,15 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://rpc.xerisweb.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
+    # `script-src` allows 'unsafe-inline' on purpose, matching XerisDex and
+    # XerisLaunchpad. The Xeris Web4 browser injects its wallet provider into
+    # the page, and on Android that injection is subject to this policy —
+    # iOS WKUserScript injection is not, which is exactly how a policy this
+    # strict passes on iPhone and silently leaves Android with no wallet.
+    # We cannot pin a hash for a script the wallet supplies, so this is the
+    # available trade. The app renders no user-supplied HTML, and
+    # `base-uri`/`form-action`/`frame-ancestors` stay locked down.
+    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://rpc.xerisweb.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"

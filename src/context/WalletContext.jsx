@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { toSignatureBytes } from '../lib/signature'
 
 /**
  * Xeris Web4 wallet connectivity.
@@ -23,8 +24,23 @@ import {
  */
 
 const DETECT_INTERVAL_MS = 100
-const DETECT_TIMEOUT_MS = 2500
+// Android WebView injects noticeably later than iOS WKWebView, especially on a
+// cold app start — 2.5s was short enough to miss it and show the "no wallet"
+// gate to someone who does have one.
+const DETECT_TIMEOUT_MS = 8000
 const RECONNECT_KEY = 'xeris_airdrop_connected'
+
+/**
+ * A user declining is a normal outcome; a bridge refusing the *shape* of an
+ * argument is not, and is worth retrying differently. The two are only
+ * distinguishable by message, so match conservatively and let anything
+ * ambiguous propagate as a real failure.
+ */
+function isArgumentRejection(err) {
+  const message = String(err?.message ?? err ?? '').toLowerCase()
+  if (/reject|denied|declin|cancel|dismiss/.test(message)) return false
+  return /argument|param|type|convert|marshal|serializ|not a function|invalid/.test(message)
+}
 
 const WalletContext = createContext({
   isConnected: false,
@@ -40,10 +56,33 @@ const WalletContext = createContext({
   },
 })
 
+/**
+ * Globals the Xeris provider has been seen under. `window.xeris` is current;
+ * `window.solana` is the older injection; the nested forms show up in some
+ * Android builds that namespace their bridge.
+ */
 function readInjectedProvider() {
   if (typeof window === 'undefined') return undefined
-  const candidate = window.xeris || window.solana
-  return candidate?.isXeris ? candidate : undefined
+
+  const candidates = [
+    window.xeris,
+    window.solana,
+    window.xerisWallet,
+    window.XerisWallet,
+    window.ethereum?.xeris,
+    window.webkit?.messageHandlers?.xeris && window.xeris,
+  ]
+
+  // Prefer a provider that identifies itself, but accept one that can do the
+  // job: a build that forgets the isXeris flag is still a usable wallet, and
+  // refusing it strands the user with no way forward.
+  const flagged = candidates.find((candidate) => candidate?.isXeris)
+  if (flagged) return flagged
+
+  return candidates.find(
+    (candidate) =>
+      typeof candidate?.connect === 'function' && typeof candidate?.signMessage === 'function',
+  )
 }
 
 function addressOf(response) {
@@ -200,13 +239,27 @@ export function WalletProvider({ children }) {
       }
 
       const encoded = new TextEncoder().encode(message)
-      const result = await walletProvider.signMessage(encoded)
 
-      const raw = result?.signature ?? result
-      if (raw instanceof Uint8Array) return raw
-      if (Array.isArray(raw)) return new Uint8Array(raw)
-      if (raw?.data && Array.isArray(raw.data)) return new Uint8Array(raw.data)
-      throw new Error('Wallet returned an unrecognised signature format.')
+      // Some Android bridges reject a Uint8Array argument because it does not
+      // survive JSON marshalling. Fall back to a plain array, then to the raw
+      // string, rather than failing on the first shape the bridge dislikes.
+      let result
+      try {
+        result = await walletProvider.signMessage(encoded)
+      } catch (err) {
+        if (isArgumentRejection(err)) {
+          try {
+            result = await walletProvider.signMessage(Array.from(encoded))
+          } catch (secondErr) {
+            if (!isArgumentRejection(secondErr)) throw secondErr
+            result = await walletProvider.signMessage(message)
+          }
+        } else {
+          throw err
+        }
+      }
+
+      return toSignatureBytes(result)
     },
     [walletProvider],
   )

@@ -23,6 +23,10 @@ const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m
 const ReferralLanding = lazy(() =>
   import('./pages/ReferralLanding').then((m) => ({ default: m.ReferralLanding })),
 )
+// Support tool, deliberately not in the nav.
+const Diagnostics = lazy(() =>
+  import('./pages/Diagnostics').then((m) => ({ default: m.Diagnostics })),
+)
 
 // CampaignProvider reads the router location to capture invite codes, so it
 // has to sit inside BrowserRouter.
@@ -47,6 +51,7 @@ function App() {
                       <Route path="/claim" element={<Claim />} />
                       <Route path="/faq" element={<Faq />} />
                       <Route path="/r/:code" element={<ReferralLanding />} />
+                      <Route path="/diagnostics" element={<Diagnostics />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>

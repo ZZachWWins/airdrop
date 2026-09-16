@@ -1,0 +1,95 @@
+.diagnostics {
+    max-width: 760px;
+}
+
+.diag-card {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+}
+
+.diag-row {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.8rem;
+}
+
+.diag-row:last-child {
+    border-bottom: none;
+}
+
+.diag-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.diag-mark.ok {
+    color: var(--status-success);
+    background: rgba(0, 230, 118, 0.1);
+}
+
+.diag-mark.bad {
+    color: var(--status-error);
+    background: rgba(255, 82, 82, 0.1);
+}
+
+.diag-mark.unknown {
+    color: var(--brand-muted);
+    background: rgba(78, 91, 166, 0.14);
+}
+
+.diag-label {
+    color: var(--brand-light);
+}
+
+.diag-detail {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+    .diag-row {
+        grid-template-columns: 20px 1fr;
+        row-gap: 0.3rem;
+    }
+
+    .diag-detail {
+        grid-column: 2;
+        text-align: left;
+    }
+}
+
+.diag-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.diag-out {
+    margin: 1rem 0 0;
+    padding: 0.85rem;
+    background: rgba(1, 4, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    font-size: 0.68rem;
+    line-height: 1.6;
+    color: var(--brand-accent);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.diag-copy {
+    margin-top: 1.25rem;
+}
