@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react'
 import { toSignatureBytes } from '../lib/signature'
+import { findXerisProvider } from '../lib/provider'
 import { isMobile } from '../lib/device'
 
 /**
@@ -69,32 +70,15 @@ const WalletContext = createContext({
 })
 
 /**
- * Globals the Xeris provider has been seen under. `window.xeris` is current;
- * `window.solana` is the older injection; the nested forms show up in some
- * Android builds that namespace their bridge.
+ * Locate the Xeris provider. See lib/provider.js for why this refuses to fall
+ * back to whatever else is sitting on `window.solana` — Phantom and friends
+ * inject there too, and connecting the wrong wallet reads as a phishing
+ * attempt.
  */
 function readInjectedProvider() {
   if (typeof window === 'undefined') return undefined
-
-  const candidates = [
-    window.xeris,
-    window.solana,
-    window.xerisWallet,
-    window.XerisWallet,
-    window.ethereum?.xeris,
-    window.webkit?.messageHandlers?.xeris && window.xeris,
-  ]
-
-  // Prefer a provider that identifies itself, but accept one that can do the
-  // job: a build that forgets the isXeris flag is still a usable wallet, and
-  // refusing it strands the user with no way forward.
-  const flagged = candidates.find((candidate) => candidate?.isXeris)
-  if (flagged) return flagged
-
-  return candidates.find(
-    (candidate) =>
-      typeof candidate?.connect === 'function' && typeof candidate?.signMessage === 'function',
-  )
+  const found = findXerisProvider(window, navigator.userAgent)
+  return found?.provider
 }
 
 function addressOf(response) {
