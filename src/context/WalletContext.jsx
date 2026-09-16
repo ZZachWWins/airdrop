@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react'
 import { toSignatureBytes } from '../lib/signature'
+import { isMobile } from '../lib/device'
 
 /**
  * Xeris Web4 wallet connectivity.
@@ -24,11 +25,22 @@ import { toSignatureBytes } from '../lib/signature'
  */
 
 const DETECT_INTERVAL_MS = 100
-// Android WebView injects noticeably later than iOS WKWebView, especially on a
-// cold app start — 2.5s was short enough to miss it and show the "no wallet"
-// gate to someone who does have one.
-const DETECT_TIMEOUT_MS = 8000
 const RECONNECT_KEY = 'xeris_airdrop_connected'
+
+/**
+ * How long to wait for a provider to appear.
+ *
+ * Android WebView injects noticeably later than iOS WKWebView on a cold app
+ * start, and 2.5s was short enough to miss it and show the "no wallet" gate
+ * to someone who does have one.
+ *
+ * Desktop gets a short window instead: there is no Xeris wallet for desktop
+ * browsers, so a long wait only means staring at a spinner before being told
+ * what was knowable immediately.
+ */
+function detectTimeoutMs() {
+  return isMobile() ? 8000 : 1200
+}
 
 /**
  * A user declining is a normal outcome; a bridge refusing the *shape* of an
@@ -117,7 +129,7 @@ export function WalletProvider({ children }) {
     const timeout = setTimeout(() => {
       clearInterval(interval)
       setIsDetecting(false)
-    }, DETECT_TIMEOUT_MS)
+    }, detectTimeoutMs())
 
     return () => {
       clearInterval(interval)
