@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
+import { SignaturePreview } from '../components/verify/SignaturePreview'
 import { NETWORK_LABEL, TOKEN_SYMBOL } from '../lib/config'
 import './Faq.css'
 
@@ -58,10 +59,17 @@ export function Faq() {
       <h1 className="section-title">Questions</h1>
 
       <div className="faq-list">
-        {FAQS.map((item) => (
+        {FAQS.map((item, index) => (
           <Card key={item.q} className="faq-item">
             <h2 className="faq-q">{item.q}</h2>
             <p className="faq-a">{item.a}</p>
+            {/* The signed message belongs with the question that asks about
+                it, not on the landing page where it reads as a warning. */}
+            {index === 0 && (
+              <div className="faq-preview">
+                <SignaturePreview />
+              </div>
+            )}
           </Card>
         ))}
       </div>

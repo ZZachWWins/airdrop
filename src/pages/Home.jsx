@@ -1,8 +1,7 @@
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Fingerprint, Radio, Users } from 'lucide-react'
+import { Fingerprint, Radio, Users } from 'lucide-react'
 import { VerifyPanel } from '../components/verify/VerifyPanel'
-import { SignaturePreview } from '../components/verify/SignaturePreview'
+import { ClosingCta } from '../components/home/ClosingCta'
 import { StatTile } from '../components/ui/StatTile'
 import { NetworkBadge } from '../components/ui/NetworkBadge'
 import { Card } from '../components/ui/Card'
@@ -15,14 +14,6 @@ const STEPS = [
   { icon: <Radio size={18} />, title: 'Open in Xeris Web4', body: 'iOS first. The app injects your account.' },
   { icon: <Fingerprint size={18} />, title: 'Sign one message', body: 'Proves you hold the key. Costs nothing.' },
   { icon: <Users size={18} />, title: 'Invite and climb', body: 'Friends who verify are credited to you.' },
-]
-
-// Stated as specs, not paragraphs. The signed message above them is the
-// evidence; restating it in prose only buries it.
-const SPECS = [
-  { label: 'Proof', value: 'Ed25519 signature' },
-  { label: 'Anchor', value: 'Live testnet block' },
-  { label: 'Scope', value: 'Signature only' },
 ]
 
 export function Home() {
@@ -50,25 +41,26 @@ export function Home() {
               <span className="text-highlight">Claim {TOKEN_SYMBOL} at mainnet.</span>
             </h1>
 
-            <p className="hero-sub">
-              One signature locks in your place. No gas, no transaction.
-            </p>
+            <p className="hero-sub">One signature locks in your place.</p>
 
             <div className="hero-stats">
               <StatTile
                 label="Wallets verified"
-                value={(stats?.totalVerified ?? 0).toLocaleString()}
+                value={stats?.totalVerified ?? 0}
                 loading={pending}
+                count
               />
               <StatTile
                 label="Referrals"
-                value={(stats?.totalReferrals ?? 0).toLocaleString()}
+                value={stats?.totalReferrals ?? 0}
                 loading={pending}
+                count
               />
               <StatTile
                 label="Last 24h"
-                value={(stats?.verifiedLast24h ?? 0).toLocaleString()}
+                value={stats?.verifiedLast24h ?? 0}
                 loading={pending}
+                count
               />
             </div>
           </motion.div>
@@ -101,27 +93,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="container trust">
-        <p className="eyebrow">Before you sign</p>
-        <h2 className="section-title">Read the message</h2>
-
-        <div className="trust-inner">
-          <SignaturePreview />
-
-          <dl className="spec-strip">
-            {SPECS.map((spec) => (
-              <div key={spec.label}>
-                <dt>{spec.label}</dt>
-                <dd>{spec.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <Link to="/faq" className="how-more">
-            Questions <ArrowRight size={14} />
-          </Link>
-        </div>
-      </section>
+      <ClosingCta totalVerified={stats?.totalVerified ?? 0} />
     </div>
   )
 }
