@@ -1,0 +1,65 @@
+.closing {
+    position: relative;
+    overflow: hidden;
+    padding: 5.5rem 0 6.5rem;
+    margin-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .closing {
+        padding: 4rem 0 4.5rem;
+        margin-top: 1.5rem;
+    }
+}
+
+/* Light rising from the bottom edge, so the page closes on a glow rather
+   than trailing off into the footer. */
+.closing-glow {
+    position: absolute;
+    bottom: -460px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1000px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(0, 25, 165, 0.5) 0%, rgba(0, 25, 165, 0) 62%);
+    pointer-events: none;
+}
+
+.closing-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.closing-mark {
+    color: var(--brand-vibrant);
+    opacity: 0.55;
+    margin-bottom: 1.75rem;
+}
+
+.closing-title {
+    font-size: clamp(1.9rem, 4.6vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    margin: 0 0 2.25rem;
+    text-wrap: balance;
+}
+
+.closing-action {
+    display: inline-block;
+}
+
+.closing-count {
+    margin: 1.5rem 0 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.closing-count strong {
+    color: var(--brand-light);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
