@@ -12,7 +12,7 @@ import { TOKEN_SYMBOL } from '../lib/config'
 import './Home.css'
 
 const STEPS = [
-  { icon: <Radio size={18} />, title: 'Open in Xeris Web4', body: 'The wallet browser injects your account.' },
+  { icon: <Radio size={18} />, title: 'Open in Xeris Web4', body: 'On iPhone. The app injects your account.' },
   { icon: <Fingerprint size={18} />, title: 'Sign one message', body: 'Proves you hold the key. Costs nothing.' },
   { icon: <Users size={18} />, title: 'Invite and climb', body: 'Friends who verify are credited to you.' },
 ]

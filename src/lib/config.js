@@ -28,6 +28,19 @@ export const WALLET_DEEPLINK = env.VITE_WALLET_DEEPLINK || ''
 export const APP_STORE_URL = env.VITE_APP_STORE_URL || ''
 export const PLAY_STORE_URL = env.VITE_PLAY_STORE_URL || ''
 
+/**
+ * Whether the Android wallet bridge can connect yet.
+ *
+ * iOS ships first, so Android visitors are told that plainly instead of being
+ * walked through steps that cannot work. Flip `VITE_ANDROID_SUPPORTED=true`
+ * when the Android build connects.
+ *
+ * This only affects what an Android visitor is *told*. Detection stays
+ * capability-based: an Android device that does inject a working provider
+ * connects normally, so the day the app ships, it works without a deploy.
+ */
+export const ANDROID_SUPPORTED = env.VITE_ANDROID_SUPPORTED === 'true'
+
 /** Where to send people who want the wallet but are on desktop. */
 export const WALLET_SITE_URL = env.VITE_WALLET_SITE_URL || 'https://xerisweb.com'
 

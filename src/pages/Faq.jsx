@@ -42,6 +42,10 @@ const FAQS = [
     a: 'Yes, each gets its own code. Re-verifying refreshes the on-chain snapshot and changes nothing else.',
   },
   {
+    q: 'Why iPhone only?',
+    a: 'The Xeris Web4 wallet bridge ships on iOS first, so that is where verifying works today. Android is coming. Nothing about the registry is iOS-specific, so Android wallets verify the same way once the bridge lands.',
+  },
+  {
     q: 'What do you store?',
     a: 'Your address, the signed message and signature, your invite code, who invited you, and the snapshot taken at verification. No email, no name, no tracking profile.',
   },

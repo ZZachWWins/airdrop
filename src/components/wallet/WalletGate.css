@@ -27,6 +27,25 @@
     font-weight: 700;
 }
 
+.wallet-gate-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    background: rgba(143, 163, 255, 0.07);
+    border: 1px solid rgba(143, 163, 255, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 0.95rem;
+    margin: 0 0 1.25rem;
+    color: var(--brand-accent);
+}
+
+.wallet-gate-note p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text-body);
+}
+
 .wallet-gate-url {
     display: flex;
     align-items: center;
