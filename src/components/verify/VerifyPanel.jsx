@@ -54,9 +54,8 @@ export function VerifyPanel() {
 
           <h3 className="verify-title">You are on the list</h3>
           <p className="verify-copy">
-            Your wallet signed a testnet challenge on {formatDate(record.verifiedAt)} and the
-            record is anchored at block {record.onchain.blockHeight ?? '—'}. When {TOKEN_SYMBOL}{' '}
-            launches on mainnet, this address is eligible to claim.
+            Verified {formatDate(record.verifiedAt)} at block{' '}
+            {record.onchain.blockHeight ?? '—'}. Eligible to claim at mainnet.
           </p>
 
           <dl className="verify-facts">
@@ -107,8 +106,8 @@ export function VerifyPanel() {
 
       <p className="verify-copy">
         {isConnected
-          ? `Approve one signature and your address is recorded as an active ${NETWORK_LABEL} participant. No gas, no transaction, nothing leaves your wallet.`
-          : `Verification takes two taps. Connect the wallet you use on ${NETWORK_LABEL}, then approve a single signature.`}
+          ? 'Approve one signature. Nothing leaves your wallet.'
+          : `Connect the wallet you use on ${NETWORK_LABEL}.`}
       </p>
 
       {inviteCode ? <InviteBanner key={inviteCode} code={inviteCode} /> : <CodeEntry />}
@@ -162,7 +161,7 @@ export function VerifyPanel() {
       )}
 
       <p className="verify-fineprint">
-        Signing proves you hold the key. It cannot move funds or approve a transaction.
+        Signing cannot move funds or approve a transaction.
       </p>
     </Card>
   )

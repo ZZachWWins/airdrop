@@ -26,9 +26,8 @@ export const Footer = () => (
 
     <div className="container footer-note">
       <p>
-        Verification records a testnet signature. It is not a purchase, not an investment, and
-        confers no guarantee of a mainnet distribution — final allocation rules are set at mainnet
-        launch.
+        Verification records a testnet signature. Not a purchase, not an investment, and no
+        guarantee of a distribution. Allocation rules are set at mainnet launch.
       </p>
     </div>
   </footer>

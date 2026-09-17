@@ -34,7 +34,7 @@ export function Dashboard() {
         <p className="eyebrow">Dashboard</p>
         <h1 className="section-title">Connect to see your status</h1>
         <p className="section-sub">
-          Your verification, invite code and referral credit are tied to your wallet address.
+          Your record is tied to your wallet address.
         </p>
 
         <Card className="dashboard-gate static">
@@ -59,8 +59,7 @@ export function Dashboard() {
           {loadingStatus ? 'Checking your status…' : 'This wallet is not verified yet'}
         </h1>
         <p className="section-sub">
-          Verify to lock in eligibility for the {TOKEN_SYMBOL} mainnet airdrop and unlock your
-          invite code.
+          Verify to lock in eligibility and get your invite code.
         </p>
         <Link to="/">
           <Button variant="accent" size="lg" className="dashboard-cta">
@@ -143,8 +142,8 @@ export function Dashboard() {
             </dl>
 
             <p className="record-note">
-              <Blocks size={13} /> Anchored against {NETWORK_LABEL} at block{' '}
-              {onchain.blockHeight ?? '—'}, checked {formatDateTime(onchain.checkedAt)}.
+              <Blocks size={13} /> Block {onchain.blockHeight ?? '—'}, checked{' '}
+              {formatDateTime(onchain.checkedAt)}.
             </p>
           </Card>
 
@@ -152,7 +151,7 @@ export function Dashboard() {
             <p className="eyebrow">Your invites</p>
             {referrals.length === 0 ? (
               <p className="referral-empty">
-                No one has used your code yet. Share it and they will show up here as they verify.
+                No one has used your code yet.
               </p>
             ) : (
               <ul className="referral-list">

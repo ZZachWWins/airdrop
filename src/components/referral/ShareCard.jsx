@@ -43,8 +43,7 @@ export function ShareCard({ code, referralCount = 0 }) {
       <p className="eyebrow">Invite a friend</p>
       <h3 className="share-title">Your invite code</h3>
       <p className="share-copy">
-        Anyone who verifies with your code is permanently credited to you. Referral counts are
-        recorded alongside every verification and travel with the snapshot to mainnet.
+        Anyone who verifies with your code is credited to you permanently.
       </p>
 
       <div className="share-code" onClick={() => copy(code, 'code')} role="button" tabIndex={0}

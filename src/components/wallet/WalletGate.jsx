@@ -45,18 +45,9 @@ export function WalletGate() {
         {onMobile ? 'Open this page in Xeris Web4' : 'Verifying happens on mobile'}
       </h3>
       <p className="wallet-gate-copy">
-        {onMobile ? (
-          <>
-            Verification is a signature from your Xeris wallet key, so it has to happen inside the
-            Xeris Web4 browser. Nothing is spent and no transaction is broadcast.
-          </>
-        ) : (
-          <>
-            Your Xeris key lives in the Xeris Web4 app on iOS and Android, so there is nothing to
-            install on desktop. Scan the code below to carry this page — and your invite code —
-            straight to your phone.
-          </>
-        )}
+        {onMobile
+          ? 'Signing needs your Xeris key, so it happens inside the app.'
+          : 'Your Xeris key lives in the mobile app. Scan to continue there.'}
       </p>
 
       {!onMobile && <QrHandoff url={pageUrl} />}
@@ -76,9 +67,9 @@ export function WalletGate() {
 
       {onMobile && (
         <ol className="wallet-gate-steps">
-          <li>Open the Xeris Web4 app.</li>
-          <li>Tap the browser tab and paste the link below.</li>
-          <li>Come back here and hit Connect.</li>
+          <li>Open Xeris Web4.</li>
+          <li>Paste this link in its browser.</li>
+          <li>Hit Connect.</li>
         </ol>
       )}
 

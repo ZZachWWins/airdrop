@@ -42,8 +42,7 @@ export function Claim() {
         <p className="eyebrow">Mainnet claim</p>
         <h1 className="section-title">Connect your testnet wallet</h1>
         <p className="section-sub">
-          Claim with the same {NETWORK_LABEL} wallet you verified with. It is the key that proves
-          the claim is yours — you will tell us where to pay on the next screen.
+          Use the same {NETWORK_LABEL} wallet you verified with.
         </p>
 
         <Card className="claim-gate static">
@@ -113,8 +112,8 @@ function ClaimFlow({ address }) {
         <h1 className="section-title">Claiming is not open yet</h1>
         <p className="section-sub">
           {status.eligible
-            ? `Your testnet wallet is verified and on the list. When ${TOKEN_SYMBOL} launches on mainnet, come back here to enter your mainnet address and claim.`
-            : `This wallet is not in the testnet registry. Verify it first — claiming opens when ${TOKEN_SYMBOL} launches on mainnet.`}
+            ? `You are on the list. Come back at mainnet launch to enter your ${TOKEN_SYMBOL} address.`
+            : 'This wallet is not in the registry. Verify it first.'}
         </p>
 
         <Card className="claim-result static">
@@ -123,8 +122,8 @@ function ClaimFlow({ address }) {
             <span>Opens at mainnet launch</span>
           </div>
           <p className="claim-closed-note">
-            Keep your {NETWORK_LABEL} wallet and its recovery phrase safe. That key is the only
-            thing that can claim this allocation — there is no recovery if it is lost.
+            Back up your {NETWORK_LABEL} recovery phrase. That key is the only thing that can
+            claim this, and there is no recovery.
           </p>
         </Card>
 
@@ -144,9 +143,8 @@ function ClaimFlow({ address }) {
         <p className="eyebrow">Mainnet claim</p>
         <h1 className="section-title">This wallet did not verify</h1>
         <p className="section-sub">
-          <span className="mono">{shortenAddress(address, 8, 6)}</span> is not in the testnet
-          registry, so there is nothing to claim against it. If you verified with a different
-          wallet, switch to it in Xeris Web4 and come back.
+          <span className="mono">{shortenAddress(address, 8, 6)}</span> has no verification. If
+          you used a different wallet, switch to it in Xeris Web4.
         </p>
         <Link to="/">
           <Button variant="secondary" size="lg" className="claim-cta">
@@ -168,8 +166,8 @@ function ClaimFlow({ address }) {
         </h1>
         <p className="section-sub">
           {existing.status === 'paid'
-            ? `Your ${TOKEN_SYMBOL} has been sent to the address below.`
-            : `Your payout address is locked in. ${TOKEN_SYMBOL} will be sent there when the distribution runs.`}
+            ? `Sent to the address below.`
+            : `Locked in. ${TOKEN_SYMBOL} arrives when the distribution runs.`}
         </p>
 
         <Card className="claim-result static" withScan={existing.status !== 'paid'}>
@@ -201,8 +199,8 @@ function ClaimFlow({ address }) {
 
           {existing.status !== 'paid' && (
             <p className="claim-rebind">
-              Wrong address? You can re-sign with a different one until the distribution runs —
-              scroll down and submit again.
+              Wrong address? Re-sign with a different one below, any time before the
+              distribution runs.
             </p>
           )}
         </Card>
@@ -218,11 +216,9 @@ function ClaimFlow({ address }) {
       <p className="eyebrow">Mainnet claim</p>
       <h1 className="section-title">Where should we send your {TOKEN_SYMBOL}?</h1>
       <p className="section-sub">
-        You verified <span className="mono">{shortenAddress(address, 6, 4)}</span> on{' '}
-        {NETWORK_LABEL}
-        {status?.verifiedAt ? ` on ${formatDateTime(status.verifiedAt)}` : ''}. Your mainnet wallet
-        is a different keypair, so tell us its address and sign with your testnet key to authorise
-        the payout.
+        Verified as <span className="mono">{shortenAddress(address, 6, 4)}</span>
+        {status?.verifiedAt ? ` on ${formatDateTime(status.verifiedAt)}` : ''}. Enter your mainnet
+        address and sign with your testnet key to authorise the payout.
       </p>
 
       <ClaimForm {...{ input, setInput, trimmed, looksValid, isSameAsTestnet, confirmed, setConfirmed, error, step, isBusy, handleClaim }} />
@@ -282,8 +278,7 @@ function ClaimForm({
       <div className="claim-warning">
         <AlertTriangle size={16} />
         <p>
-          Tokens sent to the wrong address cannot be recovered. Check every character of the
-          address above against your mainnet wallet before you sign.
+          Tokens sent to the wrong address cannot be recovered. Check every character.
         </p>
       </div>
 
@@ -324,8 +319,7 @@ function ClaimForm({
       )}
 
       <p className="claim-fineprint">
-        Signing authorises the payout address. It moves nothing from your testnet wallet and costs
-        no gas.
+        Signing moves nothing from your testnet wallet.
       </p>
     </Card>
   )

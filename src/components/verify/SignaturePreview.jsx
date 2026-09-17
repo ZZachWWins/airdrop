@@ -48,8 +48,7 @@ export function SignaturePreview() {
       </pre>
 
       <p className="sigpreview-foot">
-        No approval, no spend allowance, no contract call. A signature over this text is the entire
-        transaction — read it in your wallet and check it matches.
+        Check this matches what your wallet shows.
       </p>
     </div>
   )
