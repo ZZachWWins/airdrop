@@ -42,8 +42,8 @@ const FAQS = [
     a: 'Yes, each gets its own code. Re-verifying refreshes the on-chain snapshot and changes nothing else.',
   },
   {
-    q: 'Why iPhone only?',
-    a: 'The Xeris Web4 wallet bridge ships on iOS first, so that is where verifying works today. Android is coming. Nothing about the registry is iOS-specific, so Android wallets verify the same way once the bridge lands.',
+    q: 'Why iOS first?',
+    a: 'Sign-ups are rolling out to iPhone first, Android next. The Xeris Web4 app is live on both stores either way, and nothing about the registry is platform-specific, so Android wallets verify exactly the same way when it opens.',
   },
   {
     q: 'What do you store?',

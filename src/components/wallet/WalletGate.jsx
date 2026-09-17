@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '../ui/Button'
 import { QrHandoff } from './QrHandoff'
 import {
-  ANDROID_SUPPORTED,
+  ANDROID_SIGNUP_OPEN,
   APP_STORE_URL,
   PLAY_STORE_URL,
   WALLET_SITE_URL,
@@ -19,11 +19,11 @@ import './WalletGate.css'
  * Three genuinely different situations, and conflating them is what makes
  * this panel read as an error:
  *
- *  - **Android, before the bridge ships.** Nothing the visitor does will
- *    work, so they are told that instead of being walked through steps that
- *    end in failure. This is messaging only — detection stays
- *    capability-based, so an Android device that does inject a working
- *    provider never reaches this panel.
+ *  - **Android, before sign-ups open there.** The app is live on both
+ *    stores; verification is simply rolling out to iPhone first, so they are
+ *    told that rather than walked through steps that will not complete. This
+ *    is messaging only: detection stays capability-based, so an Android
+ *    device that does inject a working provider never reaches this panel.
  *  - **iOS in the wrong browser.** They have the app; the job is to get them
  *    into it with the URL intact.
  *  - **Desktop.** There is no Xeris wallet here and never will be, so this is
@@ -35,7 +35,7 @@ export function WalletGate() {
   const deeplink = buildDeeplink(pageUrl)
 
   const onMobile = isMobile()
-  const androidWaiting = isAndroid() && !ANDROID_SUPPORTED
+  const androidWaiting = isAndroid() && !ANDROID_SIGNUP_OPEN
 
   const copyLink = async () => {
     try {
@@ -49,22 +49,19 @@ export function WalletGate() {
     }
   }
 
-  // ── Android, bridge not shipped ─────────────────────────────────────────
+  // ── Android, before sign-ups open there ─────────────────────────────────
   if (androidWaiting) {
     return (
       <div className="wallet-gate">
-        <p className="eyebrow">Coming to Android</p>
-        <h3 className="wallet-gate-title">iPhone only for now</h3>
+        <p className="eyebrow">Rollout</p>
+        <h3 className="wallet-gate-title">iOS users first</h3>
         <p className="wallet-gate-copy">
-          Verifying needs the Xeris Web4 wallet bridge, which is live on iOS first. Android
-          support is on the way.
+          Sign-ups are opening to iPhone first. Android is next.
         </p>
 
         <div className="wallet-gate-note">
           <Smartphone size={15} />
-          <p>
-            On an iPhone? Open this link in Xeris Web4 there and it will work today.
-          </p>
+          <p>On an iPhone? Open this link in Xeris Web4 there and sign up today.</p>
         </div>
 
         <div className="wallet-gate-url">
@@ -76,6 +73,12 @@ export function WalletGate() {
         {copied && <p className="wallet-gate-copied">Link copied.</p>}
 
         <div className="wallet-gate-stores">
+          {/* The app is live on Play — they may simply not have it yet. */}
+          {PLAY_STORE_URL && (
+            <a href={PLAY_STORE_URL} target="_blank" rel="noreferrer noopener" className="store-link">
+              <Smartphone size={14} /> Google Play
+            </a>
+          )}
           <Link to="/faq" className="store-link">
             Read the FAQ
           </Link>
@@ -89,12 +92,12 @@ export function WalletGate() {
     <div className="wallet-gate">
       <p className="eyebrow">{onMobile ? 'Wallet required' : 'Continue on your phone'}</p>
       <h3 className="wallet-gate-title">
-        {onMobile ? 'Open this page in Xeris Web4' : 'Verifying happens on iPhone'}
+        {onMobile ? 'Open this page in Xeris Web4' : 'Sign up from your phone'}
       </h3>
       <p className="wallet-gate-copy">
         {onMobile
           ? 'Signing needs your Xeris key, so it happens inside the app.'
-          : 'Your Xeris key lives in the iOS app. Scan to continue there.'}
+          : 'Your Xeris key lives in the Xeris Web4 app. Sign-ups are open to iPhone first.'}
       </p>
 
       {!onMobile && <QrHandoff url={pageUrl} />}
@@ -134,7 +137,7 @@ export function WalletGate() {
             <Apple size={14} /> App Store
           </a>
         )}
-        {PLAY_STORE_URL && ANDROID_SUPPORTED && (!onMobile || isAndroid()) && (
+        {PLAY_STORE_URL && (!onMobile || isAndroid()) && (
           <a href={PLAY_STORE_URL} target="_blank" rel="noreferrer noopener" className="store-link">
             <Smartphone size={14} /> Google Play
           </a>
