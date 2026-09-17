@@ -16,12 +16,12 @@ export const NETWORK_ID = env.VITE_NETWORK_ID || 'xeris-testnet'
 export const TOKEN_SYMBOL = env.VITE_TOKEN_SYMBOL || 'XRS'
 
 /**
- * Total tokens in the airdrop pool.
+ * Total tokens in the airdrop pool, divided among everyone who verifies.
  *
- * This is the whole pool, not a per-wallet amount — what any one wallet
- * receives depends on the allocation rules set at mainnet launch. The site
- * says so wherever the figure appears, because a headline number next to a
- * sign-up button is read as a promise unless it is qualified.
+ * A shared pool, not a per-wallet amount: each share depends on how many
+ * wallets are on the final list. The site says so everywhere the figure
+ * appears, because a headline number next to a sign-up button is read as a
+ * per-person promise unless it is qualified right beside it.
  */
 export const AIRDROP_POOL = Number(env.VITE_AIRDROP_POOL || 250_000)
 

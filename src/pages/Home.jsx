@@ -48,7 +48,7 @@ export function Home() {
               <span className="hero-pool-amount">
                 {AIRDROP_POOL_DISPLAY} <em>{TOKEN_SYMBOL}</em>
               </span>
-              <span className="hero-pool-label">Total airdrop pool</span>
+              <span className="hero-pool-label">Shared by everyone who verifies</span>
             </div>
 
             <p className="hero-sub">One signature locks in your place.</p>

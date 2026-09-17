@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'How much is in the airdrop?',
-    a: `${AIRDROP_POOL_DISPLAY} ${TOKEN_SYMBOL} in total. That is the whole pool, not a per-wallet amount — what each verified wallet receives depends on the allocation rules set at mainnet launch, including how many wallets verify and their referral counts.`,
+    a: `${AIRDROP_POOL_DISPLAY} ${TOKEN_SYMBOL} in total, divided among everyone who verifies. It is a shared pool, not a fixed amount per wallet, so your share depends on how many wallets are on the final list when sign-ups close.`,
   },
   {
     q: `When do I get the ${TOKEN_SYMBOL}?`,
