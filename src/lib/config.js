@@ -28,6 +28,20 @@ export const WALLET_DEEPLINK = env.VITE_WALLET_DEEPLINK || ''
 export const APP_STORE_URL = env.VITE_APP_STORE_URL || ''
 export const PLAY_STORE_URL = env.VITE_PLAY_STORE_URL || ''
 
+/**
+ * Whether Android sign-ups are open yet.
+ *
+ * The Xeris Web4 app is live on both stores; this is about the order
+ * verification is being rolled out in, not app availability. Android
+ * visitors are told sign-ups start on iPhone rather than being walked
+ * through steps that will not complete yet.
+ *
+ * This only affects what an Android visitor is *told*. Detection stays
+ * capability-based: an Android device that does inject a working provider
+ * connects normally, so opening Android needs no deploy.
+ */
+export const ANDROID_SIGNUP_OPEN = env.VITE_ANDROID_SIGNUP_OPEN === 'true'
+
 /** Where to send people who want the wallet but are on desktop. */
 export const WALLET_SITE_URL = env.VITE_WALLET_SITE_URL || 'https://xerisweb.com'
 

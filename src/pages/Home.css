@@ -234,70 +234,67 @@
     }
 }
 
-.trust-grid {
+/* One centred column. The message is the content; anything flanking it
+   competes with the thing people are meant to read — and with the copy cut
+   back, a left-aligned block left half the width sitting empty. */
+.trust {
+    text-align: center;
+}
+
+.trust .section-title {
+    margin-bottom: 0;
+}
+
+.trust-inner {
+    max-width: 620px;
+    margin: 2rem auto 0;
+    /* The message itself must stay left-aligned; only the block is centred. */
+    text-align: left;
+}
+
+.trust .how-more {
+    margin-top: 1.5rem;
+}
+
+/* Specs, not prose. Three short pairs carry what took three paragraphs. */
+.spec-strip {
     display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 4rem;
-    align-items: start;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin: 1px 0 0;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: none;
 }
 
-@media (max-width: 960px) {
-    .trust-grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-    }
+.spec-strip > div {
+    background: var(--brand-navy);
+    padding: 0.9rem 1rem;
 }
 
-/* The signed message stays in view while the guarantees beside it scroll —
-   it is the evidence for every claim in that list. */
-.trust-preview {
-    position: sticky;
-    top: calc(var(--header-height) + 2rem);
+.spec-strip dt {
+    font-size: 0.55rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+    margin-bottom: 0.35rem;
 }
 
-@media (max-width: 960px) {
-    .trust-preview {
-        position: static;
-    }
-}
-
-.trust-list {
-    list-style: none;
-    margin: 2.5rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-}
-
-.trust-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.trust-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
-    border: 1px solid rgba(143, 163, 255, 0.28);
-    border-radius: var(--radius-sm);
-    color: var(--brand-accent);
-    background: rgba(10, 18, 61, 0.5);
-}
-
-.trust-list h3 {
-    font-size: 0.92rem;
-    font-weight: 700;
-    margin: 0 0 0.4rem;
-    line-height: 1.4;
-}
-
-.trust-list p {
-    font-size: 0.83rem;
-    line-height: 1.75;
+.spec-strip dd {
     margin: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--brand-light);
+    line-height: 1.35;
+}
+
+@media (max-width: 480px) {
+    .spec-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .spec-strip > div {
+        padding: 0.75rem 0.9rem;
+    }
 }

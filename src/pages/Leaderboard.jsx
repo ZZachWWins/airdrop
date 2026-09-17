@@ -35,8 +35,7 @@ export function Leaderboard() {
       <p className="eyebrow">Leaderboard</p>
       <h1 className="section-title">Top inviters</h1>
       <p className="section-sub">
-        Ranked by verified referrals. Addresses are masked — referral counts are public, wallets
-        are not.
+        Ranked by verified referrals. Addresses are masked.
       </p>
 
       <Card className="leaderboard-card static">

@@ -1,30 +1,41 @@
 import { useState } from 'react'
 import { Apple, Check, Copy, Smartphone, ExternalLink } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '../ui/Button'
 import { QrHandoff } from './QrHandoff'
-import { APP_STORE_URL, PLAY_STORE_URL, WALLET_SITE_URL, buildDeeplink } from '../../lib/config'
+import {
+  ANDROID_SIGNUP_OPEN,
+  APP_STORE_URL,
+  PLAY_STORE_URL,
+  WALLET_SITE_URL,
+  buildDeeplink,
+} from '../../lib/config'
 import { isAndroid, isIOS, isMobile } from '../../lib/device'
 import './WalletGate.css'
 
 /**
  * Shown when the page is open somewhere the Xeris provider is not injected.
  *
- * There are two genuinely different situations here, and conflating them is
- * what makes this panel read as an error:
+ * Three genuinely different situations, and conflating them is what makes
+ * this panel read as an error:
  *
- *  - On **desktop** there is no Xeris wallet at all, and there never will be
- *    — the key lives in the mobile app. This is not a failure, it is a
- *    handoff, so desktop gets a QR code and is told plainly that verifying
- *    happens on a phone.
- *  - On **mobile**, the user probably does have the app and is simply in the
- *    wrong browser, so the job is to get them into Xeris Web4 with the URL
- *    intact.
+ *  - **Android, before sign-ups open there.** The app is live on both
+ *    stores; verification is simply rolling out to iPhone first, so they are
+ *    told that rather than walked through steps that will not complete. This
+ *    is messaging only: detection stays capability-based, so an Android
+ *    device that does inject a working provider never reaches this panel.
+ *  - **iOS in the wrong browser.** They have the app; the job is to get them
+ *    into it with the URL intact.
+ *  - **Desktop.** There is no Xeris wallet here and never will be, so this is
+ *    a handoff to a phone, not a failure.
  */
 export function WalletGate() {
   const [copied, setCopied] = useState(false)
   const pageUrl = typeof window === 'undefined' ? '' : window.location.href
   const deeplink = buildDeeplink(pageUrl)
+
   const onMobile = isMobile()
+  const androidWaiting = isAndroid() && !ANDROID_SIGNUP_OPEN
 
   const copyLink = async () => {
     try {
@@ -38,25 +49,55 @@ export function WalletGate() {
     }
   }
 
+  // ── Android, before sign-ups open there ─────────────────────────────────
+  if (androidWaiting) {
+    return (
+      <div className="wallet-gate">
+        <p className="eyebrow">Rollout</p>
+        <h3 className="wallet-gate-title">iOS users first</h3>
+        <p className="wallet-gate-copy">
+          Sign-ups are opening to iPhone first. Android is next.
+        </p>
+
+        <div className="wallet-gate-note">
+          <Smartphone size={15} />
+          <p>On an iPhone? Open this link in Xeris Web4 there and sign up today.</p>
+        </div>
+
+        <div className="wallet-gate-url">
+          <code>{pageUrl}</code>
+          <button onClick={copyLink} aria-label="Copy link" className="wallet-gate-copy-btn">
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+          </button>
+        </div>
+        {copied && <p className="wallet-gate-copied">Link copied.</p>}
+
+        <div className="wallet-gate-stores">
+          {/* The app is live on Play — they may simply not have it yet. */}
+          {PLAY_STORE_URL && (
+            <a href={PLAY_STORE_URL} target="_blank" rel="noreferrer noopener" className="store-link">
+              <Smartphone size={14} /> Google Play
+            </a>
+          )}
+          <Link to="/faq" className="store-link">
+            Read the FAQ
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // ── iOS in the wrong browser, or desktop ────────────────────────────────
   return (
     <div className="wallet-gate">
       <p className="eyebrow">{onMobile ? 'Wallet required' : 'Continue on your phone'}</p>
       <h3 className="wallet-gate-title">
-        {onMobile ? 'Open this page in Xeris Web4' : 'Verifying happens on mobile'}
+        {onMobile ? 'Open this page in Xeris Web4' : 'Sign up from your phone'}
       </h3>
       <p className="wallet-gate-copy">
-        {onMobile ? (
-          <>
-            Verification is a signature from your Xeris wallet key, so it has to happen inside the
-            Xeris Web4 browser. Nothing is spent and no transaction is broadcast.
-          </>
-        ) : (
-          <>
-            Your Xeris key lives in the Xeris Web4 app on iOS and Android, so there is nothing to
-            install on desktop. Scan the code below to carry this page — and your invite code —
-            straight to your phone.
-          </>
-        )}
+        {onMobile
+          ? 'Signing needs your Xeris key, so it happens inside the app.'
+          : 'Your Xeris key lives in the Xeris Web4 app. Sign-ups are open to iPhone first.'}
       </p>
 
       {!onMobile && <QrHandoff url={pageUrl} />}
@@ -76,9 +117,9 @@ export function WalletGate() {
 
       {onMobile && (
         <ol className="wallet-gate-steps">
-          <li>Open the Xeris Web4 app.</li>
-          <li>Tap the browser tab and paste the link below.</li>
-          <li>Come back here and hit Connect.</li>
+          <li>Open Xeris Web4.</li>
+          <li>Paste this link in its browser.</li>
+          <li>Hit Connect.</li>
         </ol>
       )}
 

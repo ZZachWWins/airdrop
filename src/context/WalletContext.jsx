@@ -184,7 +184,7 @@ export function WalletProvider({ children }) {
     const provider = walletProvider ?? readInjectedProvider()
     if (!provider) {
       throw new Error(
-        'No Xeris wallet detected. Open this page inside the Xeris Web4 browser on iOS or Android.',
+        'No Xeris wallet detected. Open this page inside the Xeris Web4 browser on iPhone.',
       )
     }
 

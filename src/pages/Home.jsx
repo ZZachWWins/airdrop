@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Blocks, Fingerprint, KeyRound, Radio, Users } from 'lucide-react'
+import { ArrowRight, Fingerprint, Radio, Users } from 'lucide-react'
 import { VerifyPanel } from '../components/verify/VerifyPanel'
 import { SignaturePreview } from '../components/verify/SignaturePreview'
 import { StatTile } from '../components/ui/StatTile'
@@ -8,46 +8,21 @@ import { NetworkBadge } from '../components/ui/NetworkBadge'
 import { Card } from '../components/ui/Card'
 import { XerisMark } from '../components/ui/XerisMark'
 import { useStats } from '../hooks/useStats'
-import { NETWORK_LABEL, TOKEN_SYMBOL } from '../lib/config'
+import { TOKEN_SYMBOL } from '../lib/config'
 import './Home.css'
 
 const STEPS = [
-  {
-    icon: <Radio size={18} />,
-    title: 'Open in Xeris Web4',
-    body: `The wallet browser on iOS and Android injects your ${NETWORK_LABEL} account into the page. Nothing to install here.`,
-  },
-  {
-    icon: <Fingerprint size={18} />,
-    title: 'Sign one message',
-    body: 'A single signature proves you hold the key. We check your address against the live testnet node and record the block it was seen at.',
-  },
-  {
-    icon: <Users size={18} />,
-    title: 'Invite and climb',
-    body: 'You get an invite code the moment you verify. Every friend who verifies with it is credited to you, permanently.',
-  },
+  { icon: <Radio size={18} />, title: 'Open in Xeris Web4', body: 'iOS first. The app injects your account.' },
+  { icon: <Fingerprint size={18} />, title: 'Sign one message', body: 'Proves you hold the key. Costs nothing.' },
+  { icon: <Users size={18} />, title: 'Invite and climb', body: 'Friends who verify are credited to you.' },
 ]
 
-// The mechanism, stated precisely. Every line here is something a sceptical
-// reader could go and check, which is the only kind of trust claim worth
-// printing.
-const GUARANTEES = [
-  {
-    icon: <KeyRound size={17} />,
-    title: 'Your address is your public key',
-    body: 'A Xeris address is an ed25519 public key. Every record is stored with the exact message that was signed, so anyone holding the export can re-verify the whole registry themselves — no trust in us required.',
-  },
-  {
-    icon: <Blocks size={17} />,
-    title: 'Anchored to a real block',
-    body: `Verification is not just a signature. The server queries the ${NETWORK_LABEL} node directly and stamps your record with the block height it saw — a value your browser has no way to fabricate.`,
-  },
-  {
-    icon: <Fingerprint size={17} />,
-    title: 'Signatures, never approvals',
-    body: 'Nothing here asks for a transaction, a spend allowance or a contract call. The challenge is single-use and expires in ten minutes, so a captured signature is worth nothing later.',
-  },
+// Stated as specs, not paragraphs. The signed message above them is the
+// evidence; restating it in prose only buries it.
+const SPECS = [
+  { label: 'Proof', value: 'Ed25519 signature' },
+  { label: 'Anchor', value: 'Live testnet block' },
+  { label: 'Scope', value: 'Signature only' },
 ]
 
 export function Home() {
@@ -56,8 +31,6 @@ export function Home() {
 
   return (
     <div className="page home">
-      {/* Depth layers behind the hero — the same glow and grid the share card
-          uses, so the page and the link preview read as one thing. */}
       <div className="hero-glow" aria-hidden="true" />
       <div className="hero-grid-texture" aria-hidden="true" />
 
@@ -78,9 +51,7 @@ export function Home() {
             </h1>
 
             <p className="hero-sub">
-              Every wallet that verifies on {NETWORK_LABEL} is recorded in a signed registry,
-              anchored to the block it was seen at. That registry becomes the claim list when{' '}
-              {TOKEN_SYMBOL} launches on mainnet. One signature, no gas, no transaction.
+              One signature locks in your place. No gas, no transaction.
             </p>
 
             <div className="hero-stats">
@@ -116,11 +87,7 @@ export function Home() {
 
       <section className="container how">
         <p className="eyebrow">How it works</p>
-        <h2 className="section-title">Three steps, about thirty seconds</h2>
-        <p className="section-sub">
-          Verification is a proof of key ownership checked against the live testnet — not a form.
-          There is nothing to pay and nothing to approve beyond the signature itself.
-        </p>
+        <h2 className="section-title">Three steps, thirty seconds</h2>
 
         <div className="how-grid">
           {STEPS.map((step, index) => (
@@ -134,39 +101,25 @@ export function Home() {
         </div>
       </section>
 
-      {/* The transparency section. A signature prompt is exactly where a user
-          should be suspicious, so show the text up front rather than asking
-          them to take it on faith at the moment their wallet opens. */}
       <section className="container trust">
-        <div className="trust-grid">
-          <div className="trust-copy">
-            <p className="eyebrow">Why you can trust it</p>
-            <h2 className="section-title">Read the message before you sign it</h2>
-            <p className="section-sub">
-              Every safe signature request looks like every unsafe one until you read it. Here is
-              the exact text your wallet will show, published before you connect anything.
-            </p>
+        <p className="eyebrow">Before you sign</p>
+        <h2 className="section-title">Read the message</h2>
 
-            <ul className="trust-list">
-              {GUARANTEES.map((item) => (
-                <li key={item.title}>
-                  <span className="trust-icon">{item.icon}</span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+        <div className="trust-inner">
+          <SignaturePreview />
 
-            <Link to="/faq" className="how-more">
-              Read the full FAQ <ArrowRight size={14} />
-            </Link>
-          </div>
+          <dl className="spec-strip">
+            {SPECS.map((spec) => (
+              <div key={spec.label}>
+                <dt>{spec.label}</dt>
+                <dd>{spec.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-          <div className="trust-preview">
-            <SignaturePreview />
-          </div>
+          <Link to="/faq" className="how-more">
+            Questions <ArrowRight size={14} />
+          </Link>
         </div>
       </section>
     </div>
