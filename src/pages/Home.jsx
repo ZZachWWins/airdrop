@@ -50,9 +50,7 @@ export function Home() {
               <span className="text-highlight">Claim {TOKEN_SYMBOL} at mainnet.</span>
             </h1>
 
-            <p className="hero-sub">
-              One signature locks in your place. No gas, no transaction.
-            </p>
+            <p className="hero-sub">One signature locks in your place.</p>
 
             <div className="hero-stats">
               <StatTile
