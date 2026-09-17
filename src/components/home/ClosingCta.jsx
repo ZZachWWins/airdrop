@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { XerisMark } from '../ui/XerisMark'
-import { TOKEN_SYMBOL } from '../../lib/config'
+import { AIRDROP_POOL_DISPLAY, TOKEN_SYMBOL } from '../../lib/config'
 import './ClosingCta.css'
 
 /**
@@ -34,7 +34,7 @@ export function ClosingCta({ totalVerified = 0 }) {
         <XerisMark size={54} className="closing-mark" strokeWidth={46} />
 
         <h2 className="closing-title">
-          {TOKEN_SYMBOL} lands at mainnet.
+          {AIRDROP_POOL_DISPLAY} {TOKEN_SYMBOL} at mainnet.
           <br />
           <span className="text-highlight">Be on the list.</span>
         </h2>

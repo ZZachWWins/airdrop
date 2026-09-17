@@ -7,7 +7,7 @@ import { NetworkBadge } from '../components/ui/NetworkBadge'
 import { Card } from '../components/ui/Card'
 import { XerisMark } from '../components/ui/XerisMark'
 import { useStats } from '../hooks/useStats'
-import { TOKEN_SYMBOL } from '../lib/config'
+import { AIRDROP_POOL_DISPLAY, TOKEN_SYMBOL } from '../lib/config'
 import './Home.css'
 
 const STEPS = [
@@ -40,6 +40,16 @@ export function Home() {
               <br />
               <span className="text-highlight">Claim {TOKEN_SYMBOL} at mainnet.</span>
             </h1>
+
+            {/* The pool is the reason anyone is here, so it gets its own
+                weight rather than being buried in the stat row beside live
+                campaign counters. */}
+            <div className="hero-pool">
+              <span className="hero-pool-amount">
+                {AIRDROP_POOL_DISPLAY} <em>{TOKEN_SYMBOL}</em>
+              </span>
+              <span className="hero-pool-label">Total airdrop pool</span>
+            </div>
 
             <p className="hero-sub">One signature locks in your place.</p>
 

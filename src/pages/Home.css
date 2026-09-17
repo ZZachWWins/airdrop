@@ -80,6 +80,45 @@
     text-wrap: balance;
 }
 
+/* ── Pool ──────────────────────────────────────────────────────────────── */
+
+.hero-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0 0 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--brand-accent);
+}
+
+.hero-pool-amount {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--brand-light);
+    font-variant-numeric: tabular-nums;
+}
+
+/* The ticker rides smaller and in the accent, so the figure reads first. */
+.hero-pool-amount em {
+    font-style: normal;
+    font-size: 0.55em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--brand-accent);
+    margin-left: 0.15em;
+}
+
+.hero-pool-label {
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brand-muted);
+}
+
 .hero-sub {
     font-size: 1rem;
     line-height: 1.8;

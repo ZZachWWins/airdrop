@@ -103,7 +103,7 @@
       h1 {
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-weight: 800;
-        font-size: 74px;
+        font-size: 62px;
         line-height: 1.04;
         letter-spacing: -0.035em;
         color: #F0F2F5;
@@ -112,11 +112,37 @@
 
       h1 .accent { color: #8FA3FF; }
 
-      p.sub {
-        font-size: 25px;
-        line-height: 1.5;
-        max-width: 760px;
+      .pool {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-left: 22px;
+        border-left: 3px solid #8FA3FF;
         margin-bottom: 52px;
+      }
+
+      .pool-amount {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 52px;
+        letter-spacing: -0.035em;
+        line-height: 1;
+        color: #F0F2F5;
+      }
+
+      .pool-amount em {
+        font-style: normal;
+        font-size: 0.55em;
+        color: #8FA3FF;
+        margin-left: 4px;
+      }
+
+      .pool-label {
+        font-size: 15px;
+        font-weight: 900;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #4E5BA6;
       }
 
       /* Three proof points — the reasons to trust it, not marketing adjectives. */
@@ -168,10 +194,10 @@
         <span class="accent">Claim XRS at mainnet.</span>
       </h1>
 
-      <p class="sub">
-        One signature from your Xeris Web4 wallet, anchored to a live testnet block.
-        No gas, no transaction.
-      </p>
+      <div class="pool">
+        <span class="pool-amount">250,000 <em>XRS</em></span>
+        <span class="pool-label">Total airdrop pool</span>
+      </div>
 
       <div class="facts">
         <div class="fact">Signature verified</div>

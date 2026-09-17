@@ -16,6 +16,19 @@ export const NETWORK_ID = env.VITE_NETWORK_ID || 'xeris-testnet'
 export const TOKEN_SYMBOL = env.VITE_TOKEN_SYMBOL || 'XRS'
 
 /**
+ * Total tokens in the airdrop pool.
+ *
+ * This is the whole pool, not a per-wallet amount — what any one wallet
+ * receives depends on the allocation rules set at mainnet launch. The site
+ * says so wherever the figure appears, because a headline number next to a
+ * sign-up button is read as a promise unless it is qualified.
+ */
+export const AIRDROP_POOL = Number(env.VITE_AIRDROP_POOL || 250_000)
+
+/** "250,000" — grouped for display. */
+export const AIRDROP_POOL_DISPLAY = AIRDROP_POOL.toLocaleString('en-US')
+
+/**
  * Deep link used to reopen this page inside the Xeris Web4 browser when the
  * visitor is on a mobile browser that is *not* Xeris. Set
  * `VITE_WALLET_DEEPLINK` to the scheme the Xeris app registers — the `{url}`

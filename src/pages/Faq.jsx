@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { SignaturePreview } from '../components/verify/SignaturePreview'
-import { NETWORK_LABEL, TOKEN_SYMBOL } from '../lib/config'
+import { AIRDROP_POOL_DISPLAY, NETWORK_LABEL, TOKEN_SYMBOL } from '../lib/config'
 import './Faq.css'
 
 const FAQS = [
@@ -17,6 +17,10 @@ const FAQS = [
   {
     q: 'Does a new wallet with no balance count?',
     a: 'Yes. Each record is tagged new, funded or active, so a later distribution can weight real usage. Nobody is turned away for being early.',
+  },
+  {
+    q: 'How much is in the airdrop?',
+    a: `${AIRDROP_POOL_DISPLAY} ${TOKEN_SYMBOL} in total. That is the whole pool, not a per-wallet amount — what each verified wallet receives depends on the allocation rules set at mainnet launch, including how many wallets verify and their referral counts.`,
   },
   {
     q: `When do I get the ${TOKEN_SYMBOL}?`,
